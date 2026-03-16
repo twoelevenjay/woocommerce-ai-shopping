@@ -4,9 +4,9 @@
 **Donate link:**          https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=leon%40211j%2ecom&lc=MQ&item_name=Two%20Eleven%20Jay&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest
 **Tags:**                 woocommerce, ai, api, mcp, agentic-commerce
 **Requires at least:**    6.4
-**Tested up to:**         6.9
+**Tested up to:**         6.9.4
 **Requires PHP:**         7.4
-**Stable tag:**           1.0.0
+**Stable tag:**           1.1.0
 **License:**              GPLv2 or later
 **License URI:**          http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,9 +22,9 @@ AI Shopping for WooCommerce requires the most current version of WooCommerce. Yo
 
 ### Three Protocols, One Plugin
 
-* **Agentic Commerce Protocol (ACP)** — The OpenAI / Stripe standard for AI-powered checkout.
-* **Universal Commerce Protocol (UCP)** — The Shopify / Google standard with capability negotiation and `/.well-known/ucp` discovery.
-* **Model Context Protocol (MCP)** — The Anthropic standard for tool-based AI interaction.
+* **Agentic Commerce Protocol (ACP)** — The OpenAI / Stripe standard for AI-powered checkout (spec 2026-01-30). Supports capability negotiation, extensions, discounts, payment handlers, and amounts in minor units.
+* **Universal Commerce Protocol (UCP)** — The Shopify / Google standard with `/.well-known/ucp` discovery and capability negotiation (spec 2026-01-11). Supports structured capabilities, cancel endpoint, and UCP message format.
+* **Model Context Protocol (MCP)** — The Anthropic standard for tool-based AI interaction (spec 2025-11-25). Includes `title`, `outputSchema`, and proper empty-params handling.
 
 ### Features:
 
@@ -61,9 +61,9 @@ When detected, AI Shopping automatically extends the API for:
 ### 3rd Party Resources
 
 * [WooCommerce](https://wordpress.org/plugins/woocommerce/) from [Automattic](https://automattic.com/).
-* [ACP Spec](https://agenticcommerce.dev) from OpenAI and Stripe.
-* [UCP Spec](https://ucp.dev) from Shopify and Google.
-* [MCP Spec](https://spec.modelcontextprotocol.io) from Anthropic.
+* [ACP Spec](https://agenticcommerce.dev) (2026-01-30) from OpenAI and Stripe.
+* [UCP Spec](https://ucp.dev) (2026-01-11) from Shopify and Google.
+* [MCP Spec](https://modelcontextprotocol.io/specification/2025-11-25) (2025-11-25) from Anthropic.
 
 ### Contribution
 

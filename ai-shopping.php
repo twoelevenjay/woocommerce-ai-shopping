@@ -2,8 +2,8 @@
 /**
  * Plugin Name: AI Shopping for WooCommerce
  * Plugin URI:  https://github.com/twoelevenjay/ai-shopping
- * Description: Instantly expose your WooCommerce storefront to AI agents via ACP, UCP, and MCP protocols. Zero-config product discovery, cart management, checkout, and order tracking for any AI agent.
- * Version:     1.0.0
+ * Description: Expose your WooCommerce storefront to AI agents via ACP (2026-01-30), UCP (2026-01-11), and MCP (2025-11-25) protocols. Zero-config product discovery, cart management, checkout, and order tracking for any AI agent.
+ * Version:     1.1.0
  * Author:      flavflavor
  * Author URI:  https://flavflavor.com
  * License:     GPL-2.0-or-later
@@ -11,10 +11,10 @@
  * Text Domain: ai-shopping
  * Domain Path: /languages
  * Requires at least: 6.4
- * Tested up to: 6.9
+ * Tested up to: 6.9.4
  * Requires PHP: 7.4
  * WC requires at least: 8.0
- * WC tested up to: 10.5
+ * WC tested up to: 10.6.1
  *
  * @package AIShopping
  */
@@ -22,7 +22,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Plugin constants.
-define( 'AIS_VERSION', '1.0.0' );
+define( 'AIS_VERSION', '1.1.0' );
 define( 'AIS_PLUGIN_FILE', __FILE__ );
 define( 'AIS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AIS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

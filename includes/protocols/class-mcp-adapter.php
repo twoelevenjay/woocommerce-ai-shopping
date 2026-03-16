@@ -2,6 +2,12 @@
 /**
  * Model Context Protocol (MCP) adapter.
  *
+ * Updated to MCP spec 2025-11-25:
+ * - Tool definitions include optional `title` field.
+ * - Tool definitions include optional `outputSchema` for structured results.
+ * - Empty params use {"type": "object", "additionalProperties": false}.
+ * - Tool execution returns `structuredContent` alongside `content` for backwards compat.
+ *
  * @package AIShopping\Protocols
  */
 
@@ -15,8 +21,7 @@ use AIShopping\Api\REST_Controller;
  * Registers MCP tools and serves the MCP tool manifest.
  *
  * Exposes a REST endpoint that returns the MCP tool definitions so that
- * MCP clients can discover what tools are available. Also integrates with
- * the WordPress Abilities API if available.
+ * MCP clients can discover what tools are available.
  */
 class MCP_Adapter extends REST_Controller {
 
@@ -106,12 +111,15 @@ class MCP_Adapter extends REST_Controller {
 	/**
 	 * Get MCP tool definitions for the manifest.
 	 *
+	 * Updated to MCP spec 2025-11-25 with title, outputSchema, and proper empty params.
+	 *
 	 * @return array
 	 */
 	private function get_tool_definitions() {
 		return array(
 			array(
 				'name'        => 'search_products',
+				'title'       => 'Product Search',
 				'description' => 'Search and filter products in the store catalog.',
 				'inputSchema' => array(
 					'type'       => 'object',
@@ -129,6 +137,7 @@ class MCP_Adapter extends REST_Controller {
 			),
 			array(
 				'name'        => 'get_product',
+				'title'       => 'Product Details',
 				'description' => 'Get full details for a specific product including variations, attributes, and related products.',
 				'inputSchema' => array(
 					'type'       => 'object',
@@ -137,9 +146,21 @@ class MCP_Adapter extends REST_Controller {
 					),
 					'required'   => array( 'product_id' ),
 				),
+				'outputSchema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'id'          => array( 'type' => 'integer' ),
+						'name'        => array( 'type' => 'string' ),
+						'price'       => array( 'type' => 'string' ),
+						'description' => array( 'type' => 'string' ),
+						'sku'         => array( 'type' => 'string' ),
+						'stock_status' => array( 'type' => 'string' ),
+					),
+				),
 			),
 			array(
 				'name'        => 'list_categories',
+				'title'       => 'Product Categories',
 				'description' => 'List all product categories with hierarchy.',
 				'inputSchema' => array(
 					'type'       => 'object',
@@ -150,6 +171,7 @@ class MCP_Adapter extends REST_Controller {
 			),
 			array(
 				'name'        => 'get_product_variations',
+				'title'       => 'Product Variations',
 				'description' => 'Get all variations for a variable product.',
 				'inputSchema' => array(
 					'type'       => 'object',
@@ -161,14 +183,16 @@ class MCP_Adapter extends REST_Controller {
 			),
 			array(
 				'name'        => 'create_cart',
+				'title'       => 'Create Shopping Cart',
 				'description' => 'Create a new shopping cart session. Returns a cart token for subsequent operations.',
 				'inputSchema' => array(
-					'type'       => 'object',
-					'properties' => new \stdClass(),
+					'type'                 => 'object',
+					'additionalProperties' => false,
 				),
 			),
 			array(
 				'name'        => 'add_to_cart',
+				'title'       => 'Add to Cart',
 				'description' => 'Add a product to the cart.',
 				'inputSchema' => array(
 					'type'       => 'object',
@@ -183,6 +207,7 @@ class MCP_Adapter extends REST_Controller {
 			),
 			array(
 				'name'        => 'get_cart',
+				'title'       => 'View Cart',
 				'description' => 'Get current cart contents with calculated totals.',
 				'inputSchema' => array(
 					'type'       => 'object',
@@ -194,14 +219,16 @@ class MCP_Adapter extends REST_Controller {
 			),
 			array(
 				'name'        => 'get_store_info',
+				'title'       => 'Store Information',
 				'description' => 'Get store configuration: name, currency, capabilities, supported extensions, payment methods.',
 				'inputSchema' => array(
-					'type'       => 'object',
-					'properties' => new \stdClass(),
+					'type'                 => 'object',
+					'additionalProperties' => false,
 				),
 			),
 			array(
 				'name'        => 'get_shipping_methods',
+				'title'       => 'Shipping Methods',
 				'description' => 'Get available shipping methods for the current cart and address.',
 				'inputSchema' => array(
 					'type'       => 'object',
@@ -213,14 +240,16 @@ class MCP_Adapter extends REST_Controller {
 			),
 			array(
 				'name'        => 'get_payment_gateways',
+				'title'       => 'Payment Gateways',
 				'description' => 'List available payment gateways.',
 				'inputSchema' => array(
-					'type'       => 'object',
-					'properties' => new \stdClass(),
+					'type'                 => 'object',
+					'additionalProperties' => false,
 				),
 			),
 			array(
 				'name'        => 'place_order',
+				'title'       => 'Place Order',
 				'description' => 'Place an order from the current cart with addresses and payment method.',
 				'inputSchema' => array(
 					'type'       => 'object',
@@ -244,9 +273,19 @@ class MCP_Adapter extends REST_Controller {
 					),
 					'required'   => array( 'cart_token', 'billing_address', 'payment_method' ),
 				),
+				'outputSchema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'order_id' => array( 'type' => 'integer', 'description' => 'WooCommerce order ID' ),
+						'status'   => array( 'type' => 'string', 'description' => 'Order status' ),
+						'total'    => array( 'type' => 'number', 'description' => 'Order total' ),
+					),
+					'required'   => array( 'order_id', 'status', 'total' ),
+				),
 			),
 			array(
 				'name'        => 'get_order',
+				'title'       => 'Order Details',
 				'description' => 'Get order details by order ID.',
 				'inputSchema' => array(
 					'type'       => 'object',

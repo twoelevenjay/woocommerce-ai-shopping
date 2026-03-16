@@ -2,6 +2,13 @@
 
 ## Changelog
 
+### 1.1.0 03.16.2026
+* Updated ACP adapter to spec 2026-01-30: new /checkout_sessions endpoints, POST cancel, API-Version header, buyer/fulfillment_details fields, minor-unit amounts, capability negotiation, discount extension support.
+* Updated UCP adapter to spec 2026-01-11: date-based version, structured profile with ucp/payment/merchant objects, /checkout-sessions (hyphenated) endpoints, PUT update, POST cancel, UCP message format with severity.
+* Updated MCP adapter to spec 2025-11-25: added title to tool definitions, outputSchema for structured results, proper empty-params handling.
+* Legacy 1.0.0 endpoints preserved for backwards compatibility.
+* Compatibility: WordPress 6.9, WooCommerce 10.5.
+
 ### 1.0.0 02.24.2026
 * Initial release.
 * Core storefront API: products, cart, checkout, orders, store info.

@@ -2,6 +2,15 @@
 /**
  * Universal Commerce Protocol (UCP) adapter.
  *
+ * Updated to UCP spec 2026-01-11:
+ * - Version uses YYYY-MM-DD date format.
+ * - Profile structure uses ucp, payment, signing_keys top-level objects.
+ * - Capabilities use reverse-domain format with version and spec fields.
+ * - REST binding: /checkout-sessions (hyphenated), PUT for updates.
+ * - Cancel endpoint added: POST /checkout-sessions/{id}/cancel.
+ * - Status values: incomplete, requires_escalation, ready_for_complete,
+ *   complete_in_progress, completed, canceled.
+ *
  * @package AIShopping\Protocols
  */
 
@@ -21,6 +30,13 @@ use AIShopping\Extensions\Extension_Detector;
 class UCP_Adapter extends REST_Controller {
 
 	/**
+	 * UCP spec version supported.
+	 *
+	 * @var string
+	 */
+	const UCP_VERSION = '2026-01-11';
+
+	/**
 	 * Register UCP routes.
 	 */
 	public function register_routes() {
@@ -37,7 +53,8 @@ class UCP_Adapter extends REST_Controller {
 			)
 		);
 
-		// Shopping service.
+		// ── Catalog ──
+
 		register_rest_route(
 			$ns,
 			'/ucp/catalog/search',
@@ -68,7 +85,62 @@ class UCP_Adapter extends REST_Controller {
 			)
 		);
 
-		// Checkout session (UCP state machine).
+		// ── Checkout sessions (spec-compliant hyphenated path) ──
+
+		register_rest_route(
+			$ns,
+			'/ucp/checkout-sessions',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'create_session' ),
+				'permission_callback' => array( $this, 'check_write_permission' ),
+			)
+		);
+
+		register_rest_route(
+			$ns,
+			'/ucp/checkout-sessions/(?P<id>[a-zA-Z0-9]+)',
+			array(
+				array(
+					'methods'             => 'GET',
+					'callback'            => array( $this, 'get_session' ),
+					'permission_callback' => array( $this, 'check_read_permission' ),
+				),
+				array(
+					'methods'             => 'PUT',
+					'callback'            => array( $this, 'update_session' ),
+					'permission_callback' => array( $this, 'check_write_permission' ),
+				),
+				array(
+					'methods'             => 'PATCH',
+					'callback'            => array( $this, 'update_session' ),
+					'permission_callback' => array( $this, 'check_write_permission' ),
+				),
+			)
+		);
+
+		register_rest_route(
+			$ns,
+			'/ucp/checkout-sessions/(?P<id>[a-zA-Z0-9]+)/complete',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'complete_session' ),
+				'permission_callback' => array( $this, 'check_write_permission' ),
+			)
+		);
+
+		register_rest_route(
+			$ns,
+			'/ucp/checkout-sessions/(?P<id>[a-zA-Z0-9]+)/cancel',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'cancel_session' ),
+				'permission_callback' => array( $this, 'check_write_permission' ),
+			)
+		);
+
+		// ── Legacy checkout endpoints (1.0.0 backwards compat) ──
+
 		register_rest_route(
 			$ns,
 			'/ucp/checkout',
@@ -121,44 +193,74 @@ class UCP_Adapter extends REST_Controller {
 	/**
 	 * Get the merchant profile for /.well-known/ucp.
 	 *
+	 * Updated to UCP spec 2026-01-11 structure with ucp, payment top-level objects.
+	 *
 	 * @return array
 	 */
 	public function get_merchant_profile() {
 		$extensions = Extension_Detector::get_active_extensions();
+		$rest_base  = rest_url( $this->namespace . '/ucp' );
 
 		$capabilities = array(
-			'dev.ucp.shopping.catalog',
-			'dev.ucp.shopping.checkout',
-			'dev.ucp.shopping.orders',
+			array(
+				'name'    => 'dev.ucp.shopping.catalog',
+				'version' => self::UCP_VERSION,
+				'spec'    => 'https://ucp.dev/specification/catalog/',
+			),
+			array(
+				'name'    => 'dev.ucp.shopping.checkout',
+				'version' => self::UCP_VERSION,
+				'spec'    => 'https://ucp.dev/specification/checkout-rest/',
+			),
+			array(
+				'name'    => 'dev.ucp.shopping.orders',
+				'version' => self::UCP_VERSION,
+				'spec'    => 'https://ucp.dev/specification/order/',
+			),
 		);
 
 		// Add fulfillment capability if shipping is configured.
 		$zones = \WC_Shipping_Zones::get_zones();
 		if ( ! empty( $zones ) ) {
-			$capabilities[] = 'dev.ucp.shopping.fulfillment';
+			$capabilities[] = array(
+				'name'    => 'dev.ucp.shopping.fulfillment',
+				'version' => self::UCP_VERSION,
+				'spec'    => 'https://ucp.dev/specification/fulfillment/',
+			);
 		}
 
 		// Payment handlers.
 		$payment_handlers = array();
 		$gateways = WC()->payment_gateways()->get_available_payment_gateways();
 		foreach ( $gateways as $gateway ) {
-			$payment_handlers[] = $gateway->id;
+			$payment_handlers[] = array(
+				'id'   => $gateway->id,
+				'name' => $gateway->get_title(),
+			);
 		}
 
 		return array(
-			'ucp_version'      => '1.0',
-			'merchant'         => array(
+			'ucp'     => array(
+				'version'      => self::UCP_VERSION,
+				'services'     => array(
+					'rest' => array(
+						'endpoint' => $rest_base,
+					),
+				),
+				'capabilities' => $capabilities,
+			),
+			'payment' => array(
+				'handlers' => $payment_handlers,
+			),
+			'merchant' => array(
 				'name'        => get_bloginfo( 'name' ),
 				'description' => get_bloginfo( 'description' ),
 				'url'         => home_url(),
 				'logo'        => get_site_icon_url(),
+				'currency'    => get_woocommerce_currency(),
+				'supported_locales' => array( get_locale() ),
+				'extensions'  => array_keys( $extensions ),
 			),
-			'api_base'         => rest_url( $this->namespace . '/ucp' ),
-			'capabilities'     => $capabilities,
-			'payment_handlers' => $payment_handlers,
-			'currency'         => get_woocommerce_currency(),
-			'supported_locales' => array( get_locale() ),
-			'extensions'       => array_keys( $extensions ),
 		);
 	}
 
@@ -169,18 +271,51 @@ class UCP_Adapter extends REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function negotiate( $request ) {
-		$agent_caps     = $request->get_param( 'capabilities' ) ?: array();
-		$merchant_caps  = $this->get_merchant_profile()['capabilities'];
-		$intersection   = array_values( array_intersect( $merchant_caps, $agent_caps ) );
+		$profile        = $this->get_merchant_profile();
+		$merchant_caps  = $profile['ucp']['capabilities'];
+		$merchant_names = array_column( $merchant_caps, 'name' );
 
-		$agent_payments   = $request->get_param( 'payment_handlers' ) ?: array();
-		$merchant_payments = $this->get_merchant_profile()['payment_handlers'];
-		$payment_match     = array_values( array_intersect( $merchant_payments, $agent_payments ) );
+		$agent_caps = $request->get_param( 'capabilities' ) ?: array();
+		// Normalize: accept array of strings or objects.
+		$agent_names = array();
+		foreach ( $agent_caps as $cap ) {
+			$agent_names[] = is_array( $cap ) ? ( $cap['name'] ?? '' ) : $cap;
+		}
+
+		// Compute intersection.
+		$negotiated_names = array_values( array_intersect( $merchant_names, $agent_names ) );
+		$negotiated_caps  = array();
+		foreach ( $merchant_caps as $cap ) {
+			if ( in_array( $cap['name'], $negotiated_names, true ) ) {
+				$negotiated_caps[] = $cap;
+			}
+		}
+
+		// If no intersection, return all merchant capabilities.
+		if ( empty( $negotiated_caps ) ) {
+			$negotiated_caps = $merchant_caps;
+		}
+
+		$agent_payments    = $request->get_param( 'payment_handlers' ) ?: array();
+		$merchant_payments = $profile['payment']['handlers'];
+		$merchant_payment_ids = array_column( $merchant_payments, 'id' );
+		$payment_match = array();
+		foreach ( $agent_payments as $ap ) {
+			$ap_id = is_array( $ap ) ? ( $ap['id'] ?? '' ) : $ap;
+			if ( in_array( $ap_id, $merchant_payment_ids, true ) ) {
+				$payment_match[] = $ap_id;
+			}
+		}
 
 		$data = array(
-			'negotiated_capabilities'    => ! empty( $intersection ) ? $intersection : $merchant_caps,
-			'negotiated_payment_handlers' => $payment_match,
-			'merchant_profile'           => $this->get_merchant_profile(),
+			'ucp' => array(
+				'version'      => self::UCP_VERSION,
+				'capabilities' => $negotiated_caps,
+			),
+			'payment'          => array(
+				'handlers' => ! empty( $payment_match ) ? $payment_match : $merchant_payments,
+			),
+			'merchant_profile' => $profile,
 		);
 
 		$envelope = array(
@@ -254,11 +389,18 @@ class UCP_Adapter extends REST_Controller {
 		Cart_Session::save( $token, $cart_data );
 
 		$data = array(
-			'session_id' => $token,
+			'id'         => $token,
 			'status'     => 'incomplete',
 			'line_items' => $cart_data['items'],
 			'messages'   => array(
-				__( 'Checkout session created. Add shipping/billing addresses and select payment method to proceed.', 'ai-shopping' ),
+				array(
+					'severity' => 'info',
+					'content'  => __( 'Checkout session created. Add shipping/billing addresses and select payment method to proceed.', 'ai-shopping' ),
+				),
+			),
+			'ucp' => array(
+				'version'      => self::UCP_VERSION,
+				'capabilities' => $this->get_merchant_profile()['ucp']['capabilities'],
 			),
 		);
 
@@ -287,16 +429,21 @@ class UCP_Adapter extends REST_Controller {
 		$status     = $this->determine_ucp_status( $session );
 
 		$data = array(
-			'session_id'     => $session['token'],
-			'status'         => $status,
-			'line_items'     => $calculated['items'],
-			'subtotal'       => $calculated['subtotal'],
-			'tax_total'      => $calculated['tax_total'],
-			'shipping_total' => $calculated['shipping_total'],
-			'total'          => $calculated['total'],
-			'currency'       => $calculated['currency'],
-			'customer'       => $session['customer_data'],
-			'messages'       => $this->get_status_messages( $status, $session ),
+			'id'         => $session['token'],
+			'status'     => $status,
+			'line_items' => $calculated['items'],
+			'totals'     => array(
+				'subtotal' => $calculated['subtotal'],
+				'tax'      => $calculated['tax_total'],
+				'shipping' => $calculated['shipping_total'],
+				'total'    => $calculated['total'],
+			),
+			'currency'   => $calculated['currency'],
+			'buyer'      => $session['customer_data'],
+			'messages'   => $this->get_status_messages( $status, $session ),
+			'ucp'        => array(
+				'version' => self::UCP_VERSION,
+			),
 		);
 
 		$envelope = array(
@@ -331,11 +478,33 @@ class UCP_Adapter extends REST_Controller {
 		if ( isset( $params['shipping_address'] ) ) {
 			$customer['shipping_address'] = array_map( 'sanitize_text_field', $params['shipping_address'] );
 		}
+		if ( isset( $params['buyer'] ) && is_array( $params['buyer'] ) ) {
+			if ( ! empty( $params['buyer']['first_name'] ) ) {
+				$customer['billing_address']['first_name'] = sanitize_text_field( $params['buyer']['first_name'] );
+			}
+			if ( ! empty( $params['buyer']['last_name'] ) ) {
+				$customer['billing_address']['last_name'] = sanitize_text_field( $params['buyer']['last_name'] );
+			}
+			if ( ! empty( $params['buyer']['email'] ) ) {
+				$customer['billing_address']['email'] = sanitize_email( $params['buyer']['email'] );
+			}
+		}
 		if ( isset( $params['payment_method'] ) ) {
 			$customer['payment_method'] = sanitize_text_field( $params['payment_method'] );
 		}
+		if ( isset( $params['payment'] ) && ! empty( $params['payment']['selected_instrument_id'] ) ) {
+			$customer['payment_method'] = sanitize_text_field( $params['payment']['selected_instrument_id'] );
+		}
 		if ( isset( $params['shipping_method'] ) ) {
 			$customer['shipping_method'] = sanitize_text_field( $params['shipping_method'] );
+		}
+		if ( isset( $params['fulfillment'] ) && is_array( $params['fulfillment'] ) ) {
+			if ( ! empty( $params['fulfillment']['destinations'] ) ) {
+				$dest = $params['fulfillment']['destinations'][0] ?? array();
+				if ( ! empty( $dest['address'] ) ) {
+					$customer['shipping_address'] = array_map( 'sanitize_text_field', $dest['address'] );
+				}
+			}
 		}
 
 		Cart_Session::save_customer_data( $token, $customer );
@@ -345,10 +514,13 @@ class UCP_Adapter extends REST_Controller {
 		$status = $this->determine_ucp_status( $session );
 
 		$data = array(
-			'session_id' => $token,
-			'status'     => $status,
-			'customer'   => $customer,
-			'messages'   => $this->get_status_messages( $status, $session ),
+			'id'       => $token,
+			'status'   => $status,
+			'buyer'    => $customer,
+			'messages' => $this->get_status_messages( $status, $session ),
+			'ucp'      => array(
+				'version' => self::UCP_VERSION,
+			),
 		);
 
 		$envelope = array(
@@ -388,7 +560,7 @@ class UCP_Adapter extends REST_Controller {
 			);
 		}
 
-		// Place the order (reuse ACP logic).
+		// Place the order.
 		$calculated = Cart_Session::calculate_totals( $session['cart_data'], $session['customer_data'] );
 		$order      = wc_create_order();
 		$customer   = $session['customer_data'];
@@ -418,12 +590,52 @@ class UCP_Adapter extends REST_Controller {
 		Cart_Session::delete( $token );
 
 		$data = array(
-			'session_id'   => $token,
-			'status'       => 'complete',
-			'order_id'     => $order->get_id(),
-			'order_status' => $order->get_status(),
-			'total'        => (float) $order->get_total(),
+			'id'     => $token,
+			'status' => 'completed',
+			'order'  => array(
+				'id'            => $order->get_id(),
+				'permalink_url' => $order->get_view_order_url(),
+			),
+			'totals' => array(
+				'total' => (float) $order->get_total(),
+			),
 			'currency'     => $order->get_currency(),
+			'ucp'          => array(
+				'version' => self::UCP_VERSION,
+			),
+		);
+
+		$envelope = array(
+			'success' => true,
+			'data'    => $data,
+			'meta'    => $this->get_meta( 'ucp' ),
+		);
+
+		return new \WP_REST_Response( $envelope, 200 );
+	}
+
+	/**
+	 * Cancel UCP checkout session.
+	 *
+	 * @param \WP_REST_Request $request The request.
+	 * @return \WP_REST_Response
+	 */
+	public function cancel_session( $request ) {
+		$token   = sanitize_text_field( $request['id'] );
+		$session = Cart_Session::load( $token );
+
+		if ( ! $session ) {
+			return $this->error_response( 'session_not_found', __( 'Checkout session not found or expired.', 'ai-shopping' ), 404, $request );
+		}
+
+		Cart_Session::delete( $token );
+
+		$data = array(
+			'id'      => $token,
+			'status'  => 'canceled',
+			'ucp'     => array(
+				'version' => self::UCP_VERSION,
+			),
 		);
 
 		$envelope = array(
@@ -449,7 +661,7 @@ class UCP_Adapter extends REST_Controller {
 	/**
 	 * Determine UCP checkout status from session state.
 	 *
-	 * UCP state machine: incomplete → requires_escalation → ready_for_complete → complete
+	 * UCP state machine: incomplete → requires_escalation → ready_for_complete → completed
 	 *
 	 * @param array $session Session data.
 	 * @return string
@@ -486,16 +698,28 @@ class UCP_Adapter extends REST_Controller {
 
 		if ( 'incomplete' === $status ) {
 			if ( empty( $session['cart_data']['items'] ) ) {
-				$messages[] = __( 'Add items to continue.', 'ai-shopping' );
+				$messages[] = array(
+					'severity' => 'requires_buyer_input',
+					'content'  => __( 'Add items to continue.', 'ai-shopping' ),
+				);
 			}
 			if ( empty( $customer['billing_address'] ) ) {
-				$messages[] = __( 'Billing address is required.', 'ai-shopping' );
+				$messages[] = array(
+					'severity' => 'requires_buyer_input',
+					'content'  => __( 'Billing address is required.', 'ai-shopping' ),
+				);
 			}
 			if ( empty( $customer['payment_method'] ) ) {
-				$messages[] = __( 'Payment method is required.', 'ai-shopping' );
+				$messages[] = array(
+					'severity' => 'requires_buyer_input',
+					'content'  => __( 'Payment method is required.', 'ai-shopping' ),
+				);
 			}
 		} elseif ( 'ready_for_complete' === $status ) {
-			$messages[] = __( 'Checkout is ready. Call /complete to place the order.', 'ai-shopping' );
+			$messages[] = array(
+				'severity' => 'info',
+				'content'  => __( 'Checkout is ready. Call /complete to place the order.', 'ai-shopping' ),
+			);
 		}
 
 		return $messages;
