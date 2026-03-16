@@ -303,7 +303,7 @@ class Discovery {
 		 *
 		 * @param array $card Agent card data.
 		 */
-		$card = apply_filters( 'ais_agent_card', $card );
+		$card = apply_filters( 'ai_shopping_agent_card', $card );
 
 		status_header( 200 );
 		header( 'Content-Type: application/json; charset=utf-8' );
@@ -391,7 +391,7 @@ class Discovery {
 		 *
 		 * @param string $output The llms.txt content.
 		 */
-		$output = apply_filters( 'ais_llms_txt', $output );
+		$output = apply_filters( 'ai_shopping_llms_txt', $output );
 
 		status_header( 200 );
 		header( 'Content-Type: text/plain; charset=utf-8' );

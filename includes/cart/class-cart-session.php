@@ -58,7 +58,7 @@ class Cart_Session {
 
 		$token = wp_generate_password( 48, false );
 
-		$wpdb->insert(
+		$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$wpdb->prefix . self::TABLE,
 			array(
 				'cart_token'    => $token,
@@ -84,9 +84,10 @@ class Cart_Session {
 	public static function load( $token ) {
 		global $wpdb;
 
-		$row = $wpdb->get_row(
+		$table = $wpdb->prefix . self::TABLE;
+		$row   = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->prepare(
-				"SELECT * FROM {$wpdb->prefix}" . self::TABLE . ' WHERE cart_token = %s AND expires_at > NOW()',
+				'SELECT * FROM `' . $table . '` WHERE cart_token = %s AND expires_at > NOW()', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name is a safe constant.
 				$token
 			),
 			ARRAY_A
@@ -115,7 +116,7 @@ class Cart_Session {
 	public static function save( $token, $cart_data ) {
 		global $wpdb;
 
-		return (bool) $wpdb->update(
+		return (bool) $wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->prefix . self::TABLE,
 			array(
 				'cart_data'  => wp_json_encode( $cart_data ),
@@ -138,7 +139,7 @@ class Cart_Session {
 	public static function save_customer_data( $token, $customer_data ) {
 		global $wpdb;
 
-		return (bool) $wpdb->update(
+		return (bool) $wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->prefix . self::TABLE,
 			array(
 				'customer_data' => wp_json_encode( $customer_data ),
@@ -159,7 +160,7 @@ class Cart_Session {
 	public static function delete( $token ) {
 		global $wpdb;
 
-		return (bool) $wpdb->delete(
+		return (bool) $wpdb->delete( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->prefix . self::TABLE,
 			array( 'cart_token' => $token ),
 			array( '%s' )
@@ -172,7 +173,8 @@ class Cart_Session {
 	public static function cleanup_expired() {
 		global $wpdb;
 
-		$wpdb->query( "DELETE FROM {$wpdb->prefix}" . self::TABLE . ' WHERE expires_at < NOW()' );
+		$table = $wpdb->prefix . self::TABLE;
+		$wpdb->query( 'DELETE FROM `' . $table . '` WHERE expires_at < NOW()' ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 
 	/**

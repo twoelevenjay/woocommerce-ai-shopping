@@ -169,8 +169,8 @@ class Store extends REST_Controller {
 	public function get_tax_rates( $request ) {
 		global $wpdb;
 
-		$rates = $wpdb->get_results(
-			"SELECT * FROM {$wpdb->prefix}woocommerce_tax_rates ORDER BY tax_rate_order",
+		$rates = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			"SELECT * FROM {$wpdb->prefix}woocommerce_tax_rates ORDER BY tax_rate_order", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- wpdb prefix is safe.
 			ARRAY_A
 		);
 

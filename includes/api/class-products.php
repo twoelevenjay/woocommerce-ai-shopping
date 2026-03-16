@@ -405,7 +405,7 @@ class Products extends REST_Controller {
 
 		$rating = $request->get_param( 'rating' );
 		if ( $rating ) {
-			$args['meta_query'] = array(
+			$args['meta_query'] = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for rating filter.
 				array(
 					'key'   => 'rating',
 					'value' => (int) $rating,
@@ -466,7 +466,7 @@ class Products extends REST_Controller {
 		 * @param array       $data    Product summary data.
 		 * @param \WC_Product $product The product.
 		 */
-		return apply_filters( 'ais_product_summary', $data, $product );
+		return apply_filters( 'ai_shopping_product_summary', $data, $product );
 	}
 
 	/**
@@ -524,7 +524,7 @@ class Products extends REST_Controller {
 		 * @param array       $data    Product detail data.
 		 * @param \WC_Product $product The product.
 		 */
-		return apply_filters( 'ais_product_detail', $data, $product );
+		return apply_filters( 'ai_shopping_product_detail', $data, $product );
 	}
 
 	/**

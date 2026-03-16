@@ -12,17 +12,17 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 global $wpdb;
 
 // Drop custom tables.
-$tables = array(
+$ai_shopping_tables = array(
 	$wpdb->prefix . 'ais_cart_sessions',
 	$wpdb->prefix . 'ais_rate_limits',
 );
 
-foreach ( $tables as $table ) {
-	$wpdb->query( "DROP TABLE IF EXISTS {$table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+foreach ( $ai_shopping_tables as $ai_shopping_table ) {
+	$wpdb->query( "DROP TABLE IF EXISTS {$ai_shopping_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
 }
 
 // Delete options.
-$options = array(
+$ai_shopping_options = array(
 	'ais_version',
 	'ais_db_version',
 	'ais_enable_acp',
@@ -43,8 +43,8 @@ $options = array(
 	'ais_enable_markdown_negotiation',
 );
 
-foreach ( $options as $option ) {
-	delete_option( $option );
+foreach ( $ai_shopping_options as $ai_shopping_option ) {
+	delete_option( $ai_shopping_option );
 }
 
 // Delete transients.

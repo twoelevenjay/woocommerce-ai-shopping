@@ -233,16 +233,16 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 	 * Output the settings.
 	 */
 	public function output() {
-		global $current_section, $hide_save_button;
+		global $current_section, $hide_save_button; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce core variable.
 
 		switch ( $current_section ) {
 			case 'extensions':
-				$hide_save_button = true;
+				$hide_save_button = true; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce core variable.
 				$this->render_extensions_output();
 				break;
 
 			case 'endpoints':
-				$hide_save_button = true;
+				$hide_save_button = true; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce core variable.
 				$this->render_endpoints_output();
 				break;
 

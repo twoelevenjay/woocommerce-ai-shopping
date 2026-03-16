@@ -67,9 +67,9 @@ class Rate_Limiter {
 		$now   = current_time( 'mysql' );
 
 		// Get or create bucket.
-		$row = $wpdb->get_row(
+		$row = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->prepare(
-				"SELECT * FROM {$table} WHERE ip_address = %s AND bucket = %s",
+				'SELECT * FROM `' . $table . '` WHERE ip_address = %s AND bucket = %s', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name is a safe constant.
 				$ip,
 				$bucket
 			),
@@ -77,7 +77,7 @@ class Rate_Limiter {
 		);
 
 		if ( ! $row ) {
-			$wpdb->insert(
+			$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 				$table,
 				array(
 					'ip_address'  => $ip,
@@ -114,7 +114,7 @@ class Rate_Limiter {
 		}
 
 		// Consume a token.
-		$wpdb->update(
+		$wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$table,
 			array(
 				'tokens'      => $tokens - 1,
@@ -162,6 +162,6 @@ class Rate_Limiter {
 	public static function cleanup() {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE;
-		$wpdb->query( "DELETE FROM {$table} WHERE last_refill < DATE_SUB(NOW(), INTERVAL 1 DAY)" );
+		$wpdb->query( 'DELETE FROM `' . $table . '` WHERE last_refill < DATE_SUB(NOW(), INTERVAL 1 DAY)' ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 }

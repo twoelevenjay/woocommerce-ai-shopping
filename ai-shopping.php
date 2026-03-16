@@ -11,7 +11,7 @@
  * Text Domain: ai-shopping
  * Domain Path: /languages
  * Requires at least: 6.4
- * Tested up to: 6.9.4
+ * Tested up to: 6.9
  * Requires PHP: 7.4
  * WC requires at least: 8.0
  * WC tested up to: 10.6.1
@@ -59,10 +59,10 @@ spl_autoload_register(
 /**
  * Check requirements and boot the plugin.
  */
-function ais_init() {
+function ai_shopping_init() {
 	// Check for WooCommerce.
 	if ( ! class_exists( 'WooCommerce' ) ) {
-		add_action( 'admin_notices', 'ais_woocommerce_missing_notice' );
+		add_action( 'admin_notices', 'ai_shopping_woocommerce_missing_notice' );
 		return;
 	}
 
@@ -79,12 +79,12 @@ function ais_init() {
 	// Boot the plugin.
 	\AIShopping\Plugin::instance();
 }
-add_action( 'plugins_loaded', 'ais_init', 10 );
+add_action( 'plugins_loaded', 'ai_shopping_init', 10 );
 
 /**
  * Admin notice when WooCommerce is not active.
  */
-function ais_woocommerce_missing_notice() {
+function ai_shopping_woocommerce_missing_notice() {
 	printf(
 		'<div class="notice notice-error"><p>%s</p></div>',
 		esc_html__( 'AI Shopping for WooCommerce requires WooCommerce to be installed and active.', 'ai-shopping' )
@@ -94,7 +94,7 @@ function ais_woocommerce_missing_notice() {
 /**
  * Activation hook.
  */
-function ais_activate() {
+function ai_shopping_activate() {
 	// Create custom tables.
 	require_once AIS_PLUGIN_DIR . 'includes/cart/class-cart-session.php';
 	\AIShopping\Cart\Cart_Session::create_tables();
@@ -133,16 +133,16 @@ function ais_activate() {
 	// Flush rewrite rules for well-known endpoint.
 	flush_rewrite_rules();
 }
-register_activation_hook( __FILE__, 'ais_activate' );
+register_activation_hook( __FILE__, 'ai_shopping_activate' );
 
 /**
  * Deactivation hook.
  */
-function ais_deactivate() {
+function ai_shopping_deactivate() {
 	// Clean up scheduled events.
 	wp_clear_scheduled_hook( 'ais_daily_extension_scan' );
 	wp_clear_scheduled_hook( 'ais_cleanup_expired_carts' );
 	wp_clear_scheduled_hook( 'ais_cleanup_rate_limits' );
 	flush_rewrite_rules();
 }
-register_deactivation_hook( __FILE__, 'ais_deactivate' );
+register_deactivation_hook( __FILE__, 'ai_shopping_deactivate' );

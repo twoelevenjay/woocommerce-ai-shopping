@@ -60,7 +60,7 @@ class Product_Feed {
 		 *
 		 * @param array $args wc_get_products arguments.
 		 */
-		$args = apply_filters( 'ais_product_feed_query_args', $args );
+		$args = apply_filters( 'ai_shopping_product_feed_query_args', $args );
 
 		$products   = array();
 		$page       = 1;
