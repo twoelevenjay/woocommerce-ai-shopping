@@ -56,7 +56,9 @@ function processFiles() {
 
   // Process changelog.md and format accordingly
   changelogMd.forEach(line => {
-    if (line.startsWith('### ')) {
+    if (line.startsWith('## ')) {
+      output.push(`== ${line.replace('## ', '').trim()} ==\n`);
+    } else if (line.startsWith('### ')) {
       output.push(`= ${line.replace('### ', '').trim()} =\n`);
     } else {
       output.push(line + '\n');

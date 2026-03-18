@@ -72,9 +72,9 @@ All contributions welcome. Please open an issue or pull request on the [GitHub r
 ## Installation
 
 1. Extract the .zip file for this plugin and upload its contents to the `/wp-content/plugins/` directory. Alternatively, you can install directly from the Plugin directory within your WordPress Install.
-1. Activate the plugin through the "Plugins" menu in WordPress.
-1. Go to **AI Shopping** in the admin menu and generate an API key from the **API Keys** tab.
-1. Use the Consumer Secret as a Bearer token in your AI agent's requests: `Authorization: Bearer {consumer_secret}`.
+2. Activate the plugin through the "Plugins" menu in WordPress.
+3. Go to **AI Shopping** in the admin menu and generate an API key from the **API Keys** tab.
+4. Use the Consumer Secret as a Bearer token in your AI agent's requests: `Authorization: Bearer {consumer_secret}`.
 
 ## Frequently Asked Questions
 
