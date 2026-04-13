@@ -395,7 +395,7 @@ class UCP_Adapter extends REST_Controller {
 			'messages'   => array(
 				array(
 					'severity' => 'info',
-					'content'  => __( 'Checkout session created. Add shipping/billing addresses and select payment method to proceed.', 'ai-shopping' ),
+					'content'  => __( 'Checkout session created. Add shipping/billing addresses and select payment method to proceed.', '211j-ai-shopping-for-woocommerce' ),
 				),
 			),
 			'ucp' => array(
@@ -422,7 +422,7 @@ class UCP_Adapter extends REST_Controller {
 	public function get_session( $request ) {
 		$session = Cart_Session::load( sanitize_text_field( $request['id'] ) );
 		if ( ! $session ) {
-			return $this->error_response( 'session_not_found', __( 'Checkout session not found or expired.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'session_not_found', __( 'Checkout session not found or expired.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		$calculated = Cart_Session::calculate_totals( $session['cart_data'], $session['customer_data'] );
@@ -466,7 +466,7 @@ class UCP_Adapter extends REST_Controller {
 		$session = Cart_Session::load( $token );
 
 		if ( ! $session ) {
-			return $this->error_response( 'session_not_found', __( 'Checkout session not found or expired.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'session_not_found', __( 'Checkout session not found or expired.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		$customer = $session['customer_data'];
@@ -543,7 +543,7 @@ class UCP_Adapter extends REST_Controller {
 		$session = Cart_Session::load( $token );
 
 		if ( ! $session ) {
-			return $this->error_response( 'session_not_found', __( 'Checkout session not found or expired.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'session_not_found', __( 'Checkout session not found or expired.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		$status = $this->determine_ucp_status( $session );
@@ -552,7 +552,7 @@ class UCP_Adapter extends REST_Controller {
 				'not_ready',
 				sprintf(
 					/* translators: %s: current status */
-					__( 'Checkout is not ready to complete. Current status: %s. Ensure billing address and payment method are set.', 'ai-shopping' ),
+					__( 'Checkout is not ready to complete. Current status: %s. Ensure billing address and payment method are set.', '211j-ai-shopping-for-woocommerce' ),
 					$status
 				),
 				400,
@@ -584,7 +584,7 @@ class UCP_Adapter extends REST_Controller {
 
 		$order->calculate_totals();
 		$order->set_status( 'processing' );
-		$order->add_order_note( __( 'Order placed via UCP (Universal Commerce Protocol).', 'ai-shopping' ) );
+		$order->add_order_note( __( 'Order placed via UCP (Universal Commerce Protocol).', '211j-ai-shopping-for-woocommerce' ) );
 		$order->save();
 
 		Cart_Session::delete( $token );
@@ -625,7 +625,7 @@ class UCP_Adapter extends REST_Controller {
 		$session = Cart_Session::load( $token );
 
 		if ( ! $session ) {
-			return $this->error_response( 'session_not_found', __( 'Checkout session not found or expired.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'session_not_found', __( 'Checkout session not found or expired.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		Cart_Session::delete( $token );
@@ -700,25 +700,25 @@ class UCP_Adapter extends REST_Controller {
 			if ( empty( $session['cart_data']['items'] ) ) {
 				$messages[] = array(
 					'severity' => 'requires_buyer_input',
-					'content'  => __( 'Add items to continue.', 'ai-shopping' ),
+					'content'  => __( 'Add items to continue.', '211j-ai-shopping-for-woocommerce' ),
 				);
 			}
 			if ( empty( $customer['billing_address'] ) ) {
 				$messages[] = array(
 					'severity' => 'requires_buyer_input',
-					'content'  => __( 'Billing address is required.', 'ai-shopping' ),
+					'content'  => __( 'Billing address is required.', '211j-ai-shopping-for-woocommerce' ),
 				);
 			}
 			if ( empty( $customer['payment_method'] ) ) {
 				$messages[] = array(
 					'severity' => 'requires_buyer_input',
-					'content'  => __( 'Payment method is required.', 'ai-shopping' ),
+					'content'  => __( 'Payment method is required.', '211j-ai-shopping-for-woocommerce' ),
 				);
 			}
 		} elseif ( 'ready_for_complete' === $status ) {
 			$messages[] = array(
 				'severity' => 'info',
-				'content'  => __( 'Checkout is ready. Call /complete to place the order.', 'ai-shopping' ),
+				'content'  => __( 'Checkout is ready. Call /complete to place the order.', '211j-ai-shopping-for-woocommerce' ),
 			);
 		}
 

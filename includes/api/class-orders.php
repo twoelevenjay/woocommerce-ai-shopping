@@ -60,7 +60,7 @@ class Orders extends REST_Controller {
 	public function get_order( $request ) {
 		$order = wc_get_order( (int) $request['id'] );
 		if ( ! $order ) {
-			return $this->error_response( 'order_not_found', __( 'Order not found.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'order_not_found', __( 'Order not found.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		$data = $this->format_order( $order );
@@ -77,7 +77,7 @@ class Orders extends REST_Controller {
 	public function get_tracking( $request ) {
 		$order = wc_get_order( (int) $request['id'] );
 		if ( ! $order ) {
-			return $this->error_response( 'order_not_found', __( 'Order not found.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'order_not_found', __( 'Order not found.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		// Check for WooCommerce Shipment Tracking data.
@@ -113,14 +113,14 @@ class Orders extends REST_Controller {
 	public function add_note( $request ) {
 		$order = wc_get_order( (int) $request['id'] );
 		if ( ! $order ) {
-			return $this->error_response( 'order_not_found', __( 'Order not found.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'order_not_found', __( 'Order not found.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		$note = sanitize_textarea_field( $request->get_param( 'note' ) );
 		if ( ! $note ) {
 			return $this->error_response(
 				'missing_note',
-				__( 'Missing required field "note". Provide the note text as a string.', 'ai-shopping' ),
+				__( 'Missing required field "note". Provide the note text as a string.', '211j-ai-shopping-for-woocommerce' ),
 				400,
 				$request
 			);
@@ -131,7 +131,7 @@ class Orders extends REST_Controller {
 		return $this->success(
 			array(
 				'note_id' => $note_id,
-				'message' => __( 'Note added to order.', 'ai-shopping' ),
+				'message' => __( 'Note added to order.', '211j-ai-shopping-for-woocommerce' ),
 			),
 			$request,
 			201

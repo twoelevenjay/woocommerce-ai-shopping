@@ -185,7 +185,7 @@ class ACP_Adapter extends REST_Controller {
 		if ( empty( $items ) || ! is_array( $items ) ) {
 			return $this->error_response(
 				'missing_items',
-				__( 'Missing required field "items". Provide an array of {id, quantity} or {product_id, quantity} or {sku, quantity}.', 'ai-shopping' ),
+				__( 'Missing required field "items". Provide an array of {id, quantity} or {product_id, quantity} or {sku, quantity}.', '211j-ai-shopping-for-woocommerce' ),
 				400,
 				$request
 			);
@@ -340,7 +340,7 @@ class ACP_Adapter extends REST_Controller {
 	public function get_checkout( $request ) {
 		$session = Cart_Session::load( sanitize_text_field( $request['id'] ) );
 		if ( ! $session ) {
-			return $this->error_response( 'checkout_not_found', __( 'Checkout session not found or expired.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'checkout_not_found', __( 'Checkout session not found or expired.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		$calculated = Cart_Session::calculate_totals( $session['cart_data'], $session['customer_data'] );
@@ -380,7 +380,7 @@ class ACP_Adapter extends REST_Controller {
 		$session = Cart_Session::load( $token );
 
 		if ( ! $session ) {
-			return $this->error_response( 'checkout_not_found', __( 'Checkout session not found or expired.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'checkout_not_found', __( 'Checkout session not found or expired.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		$cart_data = $session['cart_data'];
@@ -539,14 +539,14 @@ class ACP_Adapter extends REST_Controller {
 		$session = Cart_Session::load( $token );
 
 		if ( ! $session ) {
-			return $this->error_response( 'checkout_not_found', __( 'Checkout session not found or expired.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'checkout_not_found', __( 'Checkout session not found or expired.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		$cart_data = $session['cart_data'];
 		$customer  = $session['customer_data'];
 
 		if ( empty( $cart_data['items'] ) ) {
-			return $this->error_response( 'empty_cart', __( 'Checkout has no items.', 'ai-shopping' ), 400, $request );
+			return $this->error_response( 'empty_cart', __( 'Checkout has no items.', '211j-ai-shopping-for-woocommerce' ), 400, $request );
 		}
 
 		// Accept buyer info at completion (ACP spec).
@@ -603,7 +603,7 @@ class ACP_Adapter extends REST_Controller {
 
 		$order->calculate_totals();
 		$order->set_status( 'processing' );
-		$order->add_order_note( __( 'Order placed via ACP (Agentic Commerce Protocol).', 'ai-shopping' ) );
+		$order->add_order_note( __( 'Order placed via ACP (Agentic Commerce Protocol).', '211j-ai-shopping-for-woocommerce' ) );
 		$order->save();
 
 		// Clean up checkout session.
@@ -644,7 +644,7 @@ class ACP_Adapter extends REST_Controller {
 		$session = Cart_Session::load( $token );
 
 		if ( ! $session ) {
-			return $this->error_response( 'checkout_not_found', __( 'Checkout session not found or expired.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'checkout_not_found', __( 'Checkout session not found or expired.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		Cart_Session::delete( $token );
@@ -654,7 +654,7 @@ class ACP_Adapter extends REST_Controller {
 			'data'    => array(
 				'id'      => $token,
 				'status'  => 'canceled',
-				'message' => __( 'Checkout canceled and cart released.', 'ai-shopping' ),
+				'message' => __( 'Checkout canceled and cart released.', '211j-ai-shopping-for-woocommerce' ),
 			),
 			'meta'    => $this->get_meta( 'acp' ),
 		);

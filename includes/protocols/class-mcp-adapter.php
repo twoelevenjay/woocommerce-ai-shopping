@@ -88,7 +88,7 @@ class MCP_Adapter extends REST_Controller {
 				'tool_not_found',
 				sprintf(
 					/* translators: %s: tool name */
-					__( 'MCP tool "%s" not found. Use GET /mcp/tools to see available tools.', 'ai-shopping' ),
+					__( 'MCP tool "%s" not found. Use GET /mcp/tools to see available tools.', '211j-ai-shopping-for-woocommerce' ),
 					$tool_name
 				),
 				404,
@@ -528,7 +528,7 @@ class MCP_Adapter extends REST_Controller {
 
 		$order->calculate_totals();
 		$order->set_status( 'processing' );
-		$order->add_order_note( __( 'Order placed via MCP (Model Context Protocol).', 'ai-shopping' ) );
+		$order->add_order_note( __( 'Order placed via MCP (Model Context Protocol).', '211j-ai-shopping-for-woocommerce' ) );
 		$order->save();
 
 		\AIShopping\Cart\Cart_Session::delete( $token );

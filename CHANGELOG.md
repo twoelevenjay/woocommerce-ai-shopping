@@ -2,6 +2,10 @@
 
 ## Changelog
 
+### 1.1.1 03.18.2026
+* Plugin check fixes for WordPress.org submission compliance.
+* Version bump for resubmission.
+
 ### 1.1.0 03.16.2026
 * Updated ACP adapter to spec 2026-01-30: new /checkout_sessions endpoints, POST cancel, API-Version header, buyer/fulfillment_details fields, minor-unit amounts, capability negotiation, discount extension support.
 * Updated UCP adapter to spec 2026-01-11: date-based version, structured profile with ucp/payment/merchant objects, /checkout-sessions (hyphenated) endpoints, PUT update, POST cancel, UCP message format with severity.

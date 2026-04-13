@@ -110,7 +110,7 @@ class Cart extends REST_Controller {
 		return $this->success(
 			array(
 				'cart_token' => $token,
-				'message'    => __( 'Cart created. Include this token in the X-Cart-Token header for all cart operations.', 'ai-shopping' ),
+				'message'    => __( 'Cart created. Include this token in the X-Cart-Token header for all cart operations.', '211j-ai-shopping-for-woocommerce' ),
 			),
 			$request,
 			201
@@ -153,7 +153,7 @@ class Cart extends REST_Controller {
 		if ( ! $product_id ) {
 			return $this->error_response(
 				'missing_product_id',
-				__( 'Missing required field "product_id". Provide the WooCommerce product ID as an integer.', 'ai-shopping' ),
+				__( 'Missing required field "product_id". Provide the WooCommerce product ID as an integer.', '211j-ai-shopping-for-woocommerce' ),
 				400,
 				$request
 			);
@@ -161,15 +161,15 @@ class Cart extends REST_Controller {
 
 		$product = wc_get_product( $variation_id ?: $product_id );
 		if ( ! $product ) {
-			return $this->error_response( 'product_not_found', __( 'Product not found.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'product_not_found', __( 'Product not found.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		if ( ! $product->is_purchasable() ) {
-			return $this->error_response( 'not_purchasable', __( 'This product cannot be purchased.', 'ai-shopping' ), 400, $request );
+			return $this->error_response( 'not_purchasable', __( 'This product cannot be purchased.', '211j-ai-shopping-for-woocommerce' ), 400, $request );
 		}
 
 		if ( ! $product->is_in_stock() ) {
-			return $this->error_response( 'out_of_stock', __( 'This product is out of stock.', 'ai-shopping' ), 400, $request );
+			return $this->error_response( 'out_of_stock', __( 'This product is out of stock.', '211j-ai-shopping-for-woocommerce' ), 400, $request );
 		}
 
 		$cart_data = $session['cart_data'];
@@ -233,7 +233,7 @@ class Cart extends REST_Controller {
 		if ( $quantity < 1 ) {
 			return $this->error_response(
 				'invalid_quantity',
-				__( 'Quantity must be at least 1. To remove an item, use DELETE /cart/items/{key}.', 'ai-shopping' ),
+				__( 'Quantity must be at least 1. To remove an item, use DELETE /cart/items/{key}.', '211j-ai-shopping-for-woocommerce' ),
 				400,
 				$request
 			);
@@ -252,7 +252,7 @@ class Cart extends REST_Controller {
 		unset( $item );
 
 		if ( ! $found ) {
-			return $this->error_response( 'item_not_found', __( 'Cart item not found.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'item_not_found', __( 'Cart item not found.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		Cart_Session::save( $session['token'], $cart_data );
@@ -287,7 +287,7 @@ class Cart extends REST_Controller {
 		);
 
 		if ( count( $cart_data['items'] ) === $original ) {
-			return $this->error_response( 'item_not_found', __( 'Cart item not found.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'item_not_found', __( 'Cart item not found.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		Cart_Session::save( $session['token'], $cart_data );
@@ -307,7 +307,7 @@ class Cart extends REST_Controller {
 		if ( ! $token ) {
 			return $this->error_response(
 				'missing_cart_token',
-				__( 'Missing X-Cart-Token header. Create a cart first with POST /cart.', 'ai-shopping' ),
+				__( 'Missing X-Cart-Token header. Create a cart first with POST /cart.', '211j-ai-shopping-for-woocommerce' ),
 				400,
 				$request
 			);
@@ -316,7 +316,7 @@ class Cart extends REST_Controller {
 		Cart_Session::delete( $token );
 
 		return $this->success(
-			array( 'message' => __( 'Cart emptied.', 'ai-shopping' ) ),
+			array( 'message' => __( 'Cart emptied.', '211j-ai-shopping-for-woocommerce' ) ),
 			$request
 		);
 	}
@@ -337,7 +337,7 @@ class Cart extends REST_Controller {
 		if ( ! $code ) {
 			return $this->error_response(
 				'missing_coupon_code',
-				__( 'Missing required field "code". Provide a valid coupon code string.', 'ai-shopping' ),
+				__( 'Missing required field "code". Provide a valid coupon code string.', '211j-ai-shopping-for-woocommerce' ),
 				400,
 				$request
 			);
@@ -346,7 +346,7 @@ class Cart extends REST_Controller {
 		// Validate coupon exists.
 		$coupon = new \WC_Coupon( $code );
 		if ( ! $coupon->get_id() ) {
-			return $this->error_response( 'invalid_coupon', __( 'Coupon code not found.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'invalid_coupon', __( 'Coupon code not found.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		$cart_data = $session['cart_data'];
@@ -400,7 +400,7 @@ class Cart extends REST_Controller {
 		if ( ! $token ) {
 			return new \WP_Error(
 				'missing_cart_token',
-				__( 'Missing X-Cart-Token header. Create a cart first with POST /cart.', 'ai-shopping' )
+				__( 'Missing X-Cart-Token header. Create a cart first with POST /cart.', '211j-ai-shopping-for-woocommerce' )
 			);
 		}
 
@@ -408,7 +408,7 @@ class Cart extends REST_Controller {
 		if ( ! $session ) {
 			return new \WP_Error(
 				'cart_not_found',
-				__( 'Cart session not found or expired. Create a new cart with POST /cart.', 'ai-shopping' )
+				__( 'Cart session not found or expired. Create a new cart with POST /cart.', '211j-ai-shopping-for-woocommerce' )
 			);
 		}
 

@@ -1,14 +1,14 @@
 <?php
 /**
- * Plugin Name: AI Shopping for WooCommerce
+ * Plugin Name: 211j AI Shopping for WooCommerce
  * Plugin URI:  https://github.com/twoelevenjay/ai-shopping
  * Description: Expose your WooCommerce storefront to AI agents via ACP (2026-01-30), UCP (2026-01-11), and MCP (2025-11-25) protocols. Zero-config product discovery, cart management, checkout, and order tracking for any AI agent.
- * Version:     1.1.0
+ * Version:     1.1.1
  * Author:      flavflavor
  * Author URI:  https://flavflavor.com
  * License:     GPL-2.0-or-later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: ai-shopping
+ * Text Domain: 211j-ai-shopping-for-woocommerce
  * Domain Path: /languages
  * Requires at least: 6.4
  * Tested up to: 6.9
@@ -23,7 +23,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Plugin constants.
-define( 'AIS_VERSION', '1.1.0' );
+define( 'AIS_VERSION', '1.1.1' );
 define( 'AIS_PLUGIN_FILE', __FILE__ );
 define( 'AIS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AIS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -88,7 +88,7 @@ add_action( 'plugins_loaded', 'ai_shopping_init', 10 );
 function ai_shopping_woocommerce_missing_notice() {
 	printf(
 		'<div class="notice notice-error"><p>%s</p></div>',
-		esc_html__( 'AI Shopping for WooCommerce requires WooCommerce to be installed and active.', 'ai-shopping' )
+		esc_html__( '211j AI Shopping for WooCommerce requires WooCommerce to be installed and active.', '211j-ai-shopping-for-woocommerce' )
 	);
 }
 

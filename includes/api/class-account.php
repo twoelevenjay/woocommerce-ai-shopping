@@ -62,7 +62,7 @@ class Account extends REST_Controller {
 		if ( ! $customer_id ) {
 			return $this->error_response(
 				'missing_customer_id',
-				__( 'Provide a customer_id parameter to retrieve account info.', 'ai-shopping' ),
+				__( 'Provide a customer_id parameter to retrieve account info.', '211j-ai-shopping-for-woocommerce' ),
 				400,
 				$request
 			);
@@ -70,7 +70,7 @@ class Account extends REST_Controller {
 
 		$customer = new \WC_Customer( (int) $customer_id );
 		if ( ! $customer->get_id() ) {
-			return $this->error_response( 'customer_not_found', __( 'Customer not found.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'customer_not_found', __( 'Customer not found.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		return $this->success(
@@ -97,7 +97,7 @@ class Account extends REST_Controller {
 	public function get_orders( $request ) {
 		$customer_id = (int) $request->get_param( 'customer_id' );
 		if ( ! $customer_id ) {
-			return $this->error_response( 'missing_customer_id', __( 'Provide a customer_id parameter.', 'ai-shopping' ), 400, $request );
+			return $this->error_response( 'missing_customer_id', __( 'Provide a customer_id parameter.', '211j-ai-shopping-for-woocommerce' ), 400, $request );
 		}
 
 		$pagination = $this->get_pagination( $request );
@@ -136,12 +136,12 @@ class Account extends REST_Controller {
 	public function get_addresses( $request ) {
 		$customer_id = (int) $request->get_param( 'customer_id' );
 		if ( ! $customer_id ) {
-			return $this->error_response( 'missing_customer_id', __( 'Provide a customer_id parameter.', 'ai-shopping' ), 400, $request );
+			return $this->error_response( 'missing_customer_id', __( 'Provide a customer_id parameter.', '211j-ai-shopping-for-woocommerce' ), 400, $request );
 		}
 
 		$customer = new \WC_Customer( $customer_id );
 		if ( ! $customer->get_id() ) {
-			return $this->error_response( 'customer_not_found', __( 'Customer not found.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'customer_not_found', __( 'Customer not found.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		return $this->success(

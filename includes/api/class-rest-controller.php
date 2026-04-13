@@ -61,14 +61,14 @@ abstract class REST_Controller {
 	protected function check_permission( $request, $operation = 'read' ) {
 		// Allow HTTP in local dev if configured.
 		if ( 'yes' !== get_option( 'ais_allow_http', 'yes' ) && ! is_ssl() ) {
-			return $this->error( 'https_required', __( 'HTTPS is required for API access.', 'ai-shopping' ), 403 );
+			return $this->error( 'https_required', __( 'HTTPS is required for API access.', '211j-ai-shopping-for-woocommerce' ), 403 );
 		}
 
 		// Write operations require an authenticated WordPress user.
 		if ( 'write' === $operation && ! is_user_logged_in() ) {
 			return $this->error(
 				'unauthorized',
-				__( 'Authentication required. Log in or provide valid credentials to perform this action.', 'ai-shopping' ),
+				__( 'Authentication required. Log in or provide valid credentials to perform this action.', '211j-ai-shopping-for-woocommerce' ),
 				401
 			);
 		}
@@ -78,7 +78,7 @@ abstract class REST_Controller {
 		if ( ! $rate['allowed'] ) {
 			$response = $this->error(
 				'rate_limit_exceeded',
-				__( 'Rate limit exceeded. Please wait and try again.', 'ai-shopping' ),
+				__( 'Rate limit exceeded. Please wait and try again.', '211j-ai-shopping-for-woocommerce' ),
 				429
 			);
 			$response->header( 'X-RateLimit-Limit', $rate['limit'] );

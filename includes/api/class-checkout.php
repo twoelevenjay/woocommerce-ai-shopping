@@ -136,33 +136,33 @@ class Checkout extends REST_Controller {
 		$customer = $session['customer_data'];
 
 		if ( empty( $session['cart_data']['items'] ) ) {
-			$errors[] = __( 'Cart is empty. Add items before checking out.', 'ai-shopping' );
+			$errors[] = __( 'Cart is empty. Add items before checking out.', '211j-ai-shopping-for-woocommerce' );
 		}
 
 		if ( empty( $customer['billing_address'] ) ) {
-			$errors[] = __( 'Billing address is required. Use PUT /checkout/billing-address to set it.', 'ai-shopping' );
+			$errors[] = __( 'Billing address is required. Use PUT /checkout/billing-address to set it.', '211j-ai-shopping-for-woocommerce' );
 		} else {
 			$billing = $customer['billing_address'];
 			$required_billing = array( 'first_name', 'last_name', 'email', 'country' );
 			foreach ( $required_billing as $field ) {
 				if ( empty( $billing[ $field ] ) ) {
 					/* translators: %s: field name */
-					$errors[] = sprintf( __( 'Missing required billing field "%s".', 'ai-shopping' ), $field );
+					$errors[] = sprintf( __( 'Missing required billing field "%s".', '211j-ai-shopping-for-woocommerce' ), $field );
 				}
 			}
 			if ( ! empty( $billing['email'] ) && ! is_email( $billing['email'] ) ) {
-				$errors[] = __( 'Invalid billing email address.', 'ai-shopping' );
+				$errors[] = __( 'Invalid billing email address.', '211j-ai-shopping-for-woocommerce' );
 			}
 		}
 
 		// Check if shipping is needed.
 		$calculated = Cart_Session::calculate_totals( $session['cart_data'], $customer );
 		if ( $calculated['needs_shipping'] && empty( $customer['shipping_address'] ) ) {
-			$errors[] = __( 'Shipping address is required. Use PUT /checkout/shipping-address to set it.', 'ai-shopping' );
+			$errors[] = __( 'Shipping address is required. Use PUT /checkout/shipping-address to set it.', '211j-ai-shopping-for-woocommerce' );
 		}
 
 		if ( empty( $customer['payment_method'] ) ) {
-			$errors[] = __( 'Payment method is required. Use GET /checkout/payment-methods to see available options.', 'ai-shopping' );
+			$errors[] = __( 'Payment method is required. Use GET /checkout/payment-methods to see available options.', '211j-ai-shopping-for-woocommerce' );
 		}
 
 		$valid = empty( $errors );
@@ -192,7 +192,7 @@ class Checkout extends REST_Controller {
 		if ( empty( $address['country'] ) ) {
 			return $this->error_response(
 				'missing_country',
-				__( 'Missing required field "country". Expected ISO 3166-1 alpha-2 country code (e.g., "US", "GB").', 'ai-shopping' ),
+				__( 'Missing required field "country". Expected ISO 3166-1 alpha-2 country code (e.g., "US", "GB").', '211j-ai-shopping-for-woocommerce' ),
 				400,
 				$request
 			);
@@ -205,7 +205,7 @@ class Checkout extends REST_Controller {
 		return $this->success(
 			array(
 				'shipping_address' => $address,
-				'message'          => __( 'Shipping address updated.', 'ai-shopping' ),
+				'message'          => __( 'Shipping address updated.', '211j-ai-shopping-for-woocommerce' ),
 			),
 			$request
 		);
@@ -227,7 +227,7 @@ class Checkout extends REST_Controller {
 		if ( empty( $address['country'] ) ) {
 			return $this->error_response(
 				'missing_country',
-				__( 'Missing required field "country". Expected ISO 3166-1 alpha-2 country code (e.g., "US", "GB").', 'ai-shopping' ),
+				__( 'Missing required field "country". Expected ISO 3166-1 alpha-2 country code (e.g., "US", "GB").', '211j-ai-shopping-for-woocommerce' ),
 				400,
 				$request
 			);
@@ -240,7 +240,7 @@ class Checkout extends REST_Controller {
 		return $this->success(
 			array(
 				'billing_address' => $address,
-				'message'         => __( 'Billing address updated.', 'ai-shopping' ),
+				'message'         => __( 'Billing address updated.', '211j-ai-shopping-for-woocommerce' ),
 			),
 			$request
 		);
@@ -298,7 +298,7 @@ class Checkout extends REST_Controller {
 		if ( ! $method_id ) {
 			return $this->error_response(
 				'missing_method_id',
-				__( 'Missing required field "method_id". Use GET /checkout/shipping-methods to see available options.', 'ai-shopping' ),
+				__( 'Missing required field "method_id". Use GET /checkout/shipping-methods to see available options.', '211j-ai-shopping-for-woocommerce' ),
 				400,
 				$request
 			);
@@ -311,7 +311,7 @@ class Checkout extends REST_Controller {
 		return $this->success(
 			array(
 				'shipping_method' => $method_id,
-				'message'         => __( 'Shipping method selected.', 'ai-shopping' ),
+				'message'         => __( 'Shipping method selected.', '211j-ai-shopping-for-woocommerce' ),
 			),
 			$request
 		);
@@ -355,11 +355,11 @@ class Checkout extends REST_Controller {
 		$customer  = $session['customer_data'];
 
 		if ( empty( $cart_data['items'] ) ) {
-			return $this->error_response( 'empty_cart', __( 'Cart is empty.', 'ai-shopping' ), 400, $request );
+			return $this->error_response( 'empty_cart', __( 'Cart is empty.', '211j-ai-shopping-for-woocommerce' ), 400, $request );
 		}
 
 		if ( empty( $customer['billing_address'] ) ) {
-			return $this->error_response( 'missing_billing', __( 'Billing address is required.', 'ai-shopping' ), 400, $request );
+			return $this->error_response( 'missing_billing', __( 'Billing address is required.', '211j-ai-shopping-for-woocommerce' ), 400, $request );
 		}
 
 		// Calculate final totals.
@@ -407,7 +407,7 @@ class Checkout extends REST_Controller {
 		}
 
 		// Add order note.
-		$order->add_order_note( __( 'Order placed via AI Shopping API.', 'ai-shopping' ) );
+		$order->add_order_note( __( 'Order placed via AI Shopping API.', '211j-ai-shopping-for-woocommerce' ) );
 		$order->save();
 
 		// Clean up the cart session.
@@ -421,7 +421,7 @@ class Checkout extends REST_Controller {
 				'total'        => $order->get_total(),
 				'currency'     => $order->get_currency(),
 				'date_created' => $order->get_date_created() ? $order->get_date_created()->date( 'c' ) : null,
-				'message'      => __( 'Order placed successfully.', 'ai-shopping' ),
+				'message'      => __( 'Order placed successfully.', '211j-ai-shopping-for-woocommerce' ),
 			),
 			$request,
 			201
@@ -439,7 +439,7 @@ class Checkout extends REST_Controller {
 		if ( ! $token ) {
 			return new \WP_Error(
 				'missing_cart_token',
-				__( 'Missing X-Cart-Token header.', 'ai-shopping' )
+				__( 'Missing X-Cart-Token header.', '211j-ai-shopping-for-woocommerce' )
 			);
 		}
 
@@ -447,7 +447,7 @@ class Checkout extends REST_Controller {
 		if ( ! $session ) {
 			return new \WP_Error(
 				'cart_not_found',
-				__( 'Cart session not found or expired.', 'ai-shopping' )
+				__( 'Cart session not found or expired.', '211j-ai-shopping-for-woocommerce' )
 			);
 		}
 

@@ -23,8 +23,8 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 	 * Constructor.
 	 */
 	public function __construct() {
-		$this->id    = 'ai-shopping';
-		$this->label = __( 'AI Shopping', 'ai-shopping' );
+		$this->id    = '211j-ai-shopping-for-woocommerce';
+		$this->label = __( '211j AI Shopping', '211j-ai-shopping-for-woocommerce' );
 
 		// Render promo footer on every section.
 		add_action( 'woocommerce_after_settings_' . $this->id, array( $this, 'render_promo_footer' ) );
@@ -39,10 +39,10 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 	 */
 	protected function get_own_sections() {
 		return array(
-			''           => __( 'General', 'ai-shopping' ),
-			'discovery'  => __( 'Discovery', 'ai-shopping' ),
-			'extensions' => __( 'Extensions', 'ai-shopping' ),
-			'endpoints'  => __( 'Endpoints', 'ai-shopping' ),
+			''           => __( 'General', '211j-ai-shopping-for-woocommerce' ),
+			'discovery'  => __( 'Discovery', '211j-ai-shopping-for-woocommerce' ),
+			'extensions' => __( 'Extensions', '211j-ai-shopping-for-woocommerce' ),
+			'endpoints'  => __( 'Endpoints', '211j-ai-shopping-for-woocommerce' ),
 		);
 	}
 
@@ -55,31 +55,31 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 		return array(
 			// Protocols.
 			array(
-				'title' => __( 'Protocols', 'ai-shopping' ),
+				'title' => __( 'Protocols', '211j-ai-shopping-for-woocommerce' ),
 				'type'  => 'title',
-				'desc'  => __( 'Enable or disable AI commerce protocol adapters.', 'ai-shopping' ),
+				'desc'  => __( 'Enable or disable AI commerce protocol adapters.', '211j-ai-shopping-for-woocommerce' ),
 				'id'    => 'ais_protocols_options',
 			),
 			array(
-				'title'   => __( 'Agentic Commerce Protocol (ACP)', 'ai-shopping' ),
+				'title'   => __( 'Agentic Commerce Protocol (ACP)', '211j-ai-shopping-for-woocommerce' ),
 				'id'      => 'ais_enable_acp',
 				'type'    => 'checkbox',
 				'default' => 'yes',
-				'desc'    => __( 'Enable ACP endpoints (OpenAI/Stripe)', 'ai-shopping' ),
+				'desc'    => __( 'Enable ACP endpoints (OpenAI/Stripe)', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
-				'title'   => __( 'Universal Commerce Protocol (UCP)', 'ai-shopping' ),
+				'title'   => __( 'Universal Commerce Protocol (UCP)', '211j-ai-shopping-for-woocommerce' ),
 				'id'      => 'ais_enable_ucp',
 				'type'    => 'checkbox',
 				'default' => 'yes',
-				'desc'    => __( 'Enable UCP endpoints (Shopify/Google)', 'ai-shopping' ),
+				'desc'    => __( 'Enable UCP endpoints (Shopify/Google)', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
-				'title'   => __( 'Model Context Protocol (MCP)', 'ai-shopping' ),
+				'title'   => __( 'Model Context Protocol (MCP)', '211j-ai-shopping-for-woocommerce' ),
 				'id'      => 'ais_enable_mcp',
 				'type'    => 'checkbox',
 				'default' => 'yes',
-				'desc'    => __( 'Enable MCP tools (Anthropic)', 'ai-shopping' ),
+				'desc'    => __( 'Enable MCP tools (Anthropic)', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'type' => 'sectionend',
@@ -88,27 +88,27 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 
 			// Rate Limiting.
 			array(
-				'title' => __( 'Rate Limiting', 'ai-shopping' ),
+				'title' => __( 'Rate Limiting', '211j-ai-shopping-for-woocommerce' ),
 				'type'  => 'title',
 				'id'    => 'ais_rate_limit_options',
 			),
 			array(
-				'title'             => __( 'Read requests/minute', 'ai-shopping' ),
+				'title'             => __( 'Read requests/minute', '211j-ai-shopping-for-woocommerce' ),
 				'id'                => 'ais_rate_limit_read',
 				'type'              => 'number',
 				'default'           => '60',
 				'css'               => 'width:80px;',
 				'custom_attributes' => array( 'min' => '0' ),
-				'desc'              => __( '0 = unlimited. Default: 60.', 'ai-shopping' ),
+				'desc'              => __( '0 = unlimited. Default: 60.', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
-				'title'             => __( 'Write requests/minute', 'ai-shopping' ),
+				'title'             => __( 'Write requests/minute', '211j-ai-shopping-for-woocommerce' ),
 				'id'                => 'ais_rate_limit_write',
 				'type'              => 'number',
 				'default'           => '30',
 				'css'               => 'width:80px;',
 				'custom_attributes' => array( 'min' => '0' ),
-				'desc'              => __( '0 = unlimited. Default: 30.', 'ai-shopping' ),
+				'desc'              => __( '0 = unlimited. Default: 30.', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'type' => 'sectionend',
@@ -117,23 +117,23 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 
 			// Webhooks.
 			array(
-				'title' => __( 'Webhooks', 'ai-shopping' ),
+				'title' => __( 'Webhooks', '211j-ai-shopping-for-woocommerce' ),
 				'type'  => 'title',
 				'id'    => 'ais_webhook_options',
 			),
 			array(
-				'title' => __( 'Webhook URL', 'ai-shopping' ),
+				'title' => __( 'Webhook URL', '211j-ai-shopping-for-woocommerce' ),
 				'id'    => 'ais_webhook_url',
 				'type'  => 'url',
 				'css'   => 'width:400px;',
-				'desc'  => __( 'URL to receive order status change events.', 'ai-shopping' ),
+				'desc'  => __( 'URL to receive order status change events.', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
-				'title' => __( 'Webhook Secret', 'ai-shopping' ),
+				'title' => __( 'Webhook Secret', '211j-ai-shopping-for-woocommerce' ),
 				'id'    => 'ais_webhook_secret',
 				'type'  => 'text',
 				'css'   => 'width:400px;',
-				'desc'  => __( 'Used to HMAC-sign webhook payloads.', 'ai-shopping' ),
+				'desc'  => __( 'Used to HMAC-sign webhook payloads.', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'type' => 'sectionend',
@@ -142,23 +142,23 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 
 			// Security.
 			array(
-				'title' => __( 'Security', 'ai-shopping' ),
+				'title' => __( 'Security', '211j-ai-shopping-for-woocommerce' ),
 				'type'  => 'title',
 				'id'    => 'ais_security_options',
 			),
 			array(
-				'title'   => __( 'Allow HTTP', 'ai-shopping' ),
+				'title'   => __( 'Allow HTTP', '211j-ai-shopping-for-woocommerce' ),
 				'id'      => 'ais_allow_http',
 				'type'    => 'checkbox',
 				'default' => 'yes',
-				'desc'    => __( 'Allow API access over HTTP (for local development).', 'ai-shopping' ),
+				'desc'    => __( 'Allow API access over HTTP (for local development).', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
-				'title'   => __( 'Debug Logging', 'ai-shopping' ),
+				'title'   => __( 'Debug Logging', '211j-ai-shopping-for-woocommerce' ),
 				'id'      => 'ais_enable_logging',
 				'type'    => 'checkbox',
 				'default' => 'no',
-				'desc'    => __( 'Log API requests (written to WooCommerce logs).', 'ai-shopping' ),
+				'desc'    => __( 'Log API requests (written to WooCommerce logs).', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'type' => 'sectionend',
@@ -175,52 +175,52 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 	protected function get_settings_for_discovery_section() {
 		return array(
 			array(
-				'title' => __( 'Discovery Settings', 'ai-shopping' ),
+				'title' => __( 'Discovery Settings', '211j-ai-shopping-for-woocommerce' ),
 				'type'  => 'title',
-				'desc'  => __( 'Control which AI discovery mechanisms are active on your store.', 'ai-shopping' ),
+				'desc'  => __( 'Control which AI discovery mechanisms are active on your store.', '211j-ai-shopping-for-woocommerce' ),
 				'id'    => 'ais_discovery_options',
 			),
 			array(
-				'title'   => __( 'Master Toggle', 'ai-shopping' ),
+				'title'   => __( 'Master Toggle', '211j-ai-shopping-for-woocommerce' ),
 				'id'      => 'ais_enable_discovery',
 				'type'    => 'checkbox',
 				'default' => 'yes',
-				'desc'    => __( 'Enable AI discovery layer (controls all mechanisms below)', 'ai-shopping' ),
+				'desc'    => __( 'Enable AI discovery layer (controls all mechanisms below)', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
-				'title'   => __( 'Schema.org Enhancement', 'ai-shopping' ),
+				'title'   => __( 'Schema.org Enhancement', '211j-ai-shopping-for-woocommerce' ),
 				'id'      => 'ais_enable_schema_enhancement',
 				'type'    => 'checkbox',
 				'default' => 'yes',
-				'desc'    => __( 'Enhance product JSON-LD with brand, GTIN, dimensions, reviews, etc.', 'ai-shopping' ),
+				'desc'    => __( 'Enhance product JSON-LD with brand, GTIN, dimensions, reviews, etc.', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
-				'title'   => __( 'Agent Card', 'ai-shopping' ),
+				'title'   => __( 'Agent Card', '211j-ai-shopping-for-woocommerce' ),
 				'id'      => 'ais_enable_agent_json',
 				'type'    => 'checkbox',
 				'default' => 'yes',
-				'desc'    => __( 'Serve A2A Agent Card at /.well-known/agent.json', 'ai-shopping' ),
+				'desc'    => __( 'Serve A2A Agent Card at /.well-known/agent.json', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
-				'title'   => __( 'LLMs.txt', 'ai-shopping' ),
+				'title'   => __( 'LLMs.txt', '211j-ai-shopping-for-woocommerce' ),
 				'id'      => 'ais_enable_llms_txt',
 				'type'    => 'checkbox',
 				'default' => 'yes',
-				'desc'    => __( 'Serve store overview at /llms.txt', 'ai-shopping' ),
+				'desc'    => __( 'Serve store overview at /llms.txt', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
-				'title'   => __( 'Product Feed', 'ai-shopping' ),
+				'title'   => __( 'Product Feed', '211j-ai-shopping-for-woocommerce' ),
 				'id'      => 'ais_enable_product_feed',
 				'type'    => 'checkbox',
 				'default' => 'yes',
-				'desc'    => __( 'Serve full product catalog at /ai-shopping-feed.json', 'ai-shopping' ),
+				'desc'    => __( 'Serve full product catalog at /ai-shopping-feed.json', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
-				'title'   => __( 'Markdown Negotiation', 'ai-shopping' ),
+				'title'   => __( 'Markdown Negotiation', '211j-ai-shopping-for-woocommerce' ),
 				'id'      => 'ais_enable_markdown_negotiation',
 				'type'    => 'checkbox',
 				'default' => 'yes',
-				'desc'    => __( 'Serve markdown product data when Accept: text/markdown header is present', 'ai-shopping' ),
+				'desc'    => __( 'Serve markdown product data when Accept: text/markdown header is present', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'type' => 'sectionend',
@@ -277,13 +277,13 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 	private function render_extensions_output() {
 		$results = Extension_Detector::get_scan_results();
 		?>
-		<h2><?php esc_html_e( 'Extension Compatibility Report', 'ai-shopping' ); ?></h2>
-		<p><?php esc_html_e( 'AI Shopping automatically detects and integrates with these WooCommerce extensions.', 'ai-shopping' ); ?></p>
+		<h2><?php esc_html_e( 'Extension Compatibility Report', '211j-ai-shopping-for-woocommerce' ); ?></h2>
+		<p><?php esc_html_e( 'AI Shopping automatically detects and integrates with these WooCommerce extensions.', '211j-ai-shopping-for-woocommerce' ); ?></p>
 		<table class="widefat striped">
 			<thead>
 				<tr>
-					<th><?php esc_html_e( 'Extension', 'ai-shopping' ); ?></th>
-					<th><?php esc_html_e( 'Status', 'ai-shopping' ); ?></th>
+					<th><?php esc_html_e( 'Extension', '211j-ai-shopping-for-woocommerce' ); ?></th>
+					<th><?php esc_html_e( 'Status', '211j-ai-shopping-for-woocommerce' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -292,9 +292,9 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 						<td><?php echo esc_html( $data['name'] ); ?></td>
 						<td>
 							<?php if ( $data['active'] ) : ?>
-								<span style="color: #00a32a; font-weight: bold;">&#10003; <?php esc_html_e( 'Active — Integrated', 'ai-shopping' ); ?></span>
+								<span style="color: #00a32a; font-weight: bold;">&#10003; <?php esc_html_e( 'Active — Integrated', '211j-ai-shopping-for-woocommerce' ); ?></span>
 							<?php else : ?>
-								<span style="color: #888;">&#8212; <?php esc_html_e( 'Not installed', 'ai-shopping' ); ?></span>
+								<span style="color: #888;">&#8212; <?php esc_html_e( 'Not installed', '211j-ai-shopping-for-woocommerce' ); ?></span>
 							<?php endif; ?>
 						</td>
 					</tr>
@@ -310,61 +310,61 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 	private function render_endpoints_output() {
 		$base = rest_url( 'ai-shopping/v1' );
 		?>
-		<h2><?php esc_html_e( 'API Endpoints Reference', 'ai-shopping' ); ?></h2>
+		<h2><?php esc_html_e( 'API Endpoints Reference', '211j-ai-shopping-for-woocommerce' ); ?></h2>
 		<p>
 			<?php
 			printf(
 				/* translators: %s: API base URL */
-				esc_html__( 'Base URL: %s', 'ai-shopping' ),
+				esc_html__( 'Base URL: %s', '211j-ai-shopping-for-woocommerce' ),
 				'<code>' . esc_url( $base ) . '</code>'
 			);
 			?>
 		</p>
 
-		<h3><?php esc_html_e( 'Core Storefront API', 'ai-shopping' ); ?></h3>
+		<h3><?php esc_html_e( 'Core Storefront API', '211j-ai-shopping-for-woocommerce' ); ?></h3>
 		<table class="widefat striped">
-			<thead><tr><th><?php esc_html_e( 'Method', 'ai-shopping' ); ?></th><th><?php esc_html_e( 'Endpoint', 'ai-shopping' ); ?></th><th><?php esc_html_e( 'Description', 'ai-shopping' ); ?></th></tr></thead>
+			<thead><tr><th><?php esc_html_e( 'Method', '211j-ai-shopping-for-woocommerce' ); ?></th><th><?php esc_html_e( 'Endpoint', '211j-ai-shopping-for-woocommerce' ); ?></th><th><?php esc_html_e( 'Description', '211j-ai-shopping-for-woocommerce' ); ?></th></tr></thead>
 			<tbody>
-				<tr><td><code>GET</code></td><td><code>/products</code></td><td><?php esc_html_e( 'Search and filter products', 'ai-shopping' ); ?></td></tr>
-				<tr><td><code>GET</code></td><td><code>/products/{id}</code></td><td><?php esc_html_e( 'Product detail with variations', 'ai-shopping' ); ?></td></tr>
-				<tr><td><code>GET</code></td><td><code>/categories</code></td><td><?php esc_html_e( 'Product categories', 'ai-shopping' ); ?></td></tr>
-				<tr><td><code>POST</code></td><td><code>/cart</code></td><td><?php esc_html_e( 'Create cart session', 'ai-shopping' ); ?></td></tr>
-				<tr><td><code>GET</code></td><td><code>/cart</code></td><td><?php esc_html_e( 'Get cart with totals', 'ai-shopping' ); ?></td></tr>
-				<tr><td><code>POST</code></td><td><code>/cart/items</code></td><td><?php esc_html_e( 'Add item to cart', 'ai-shopping' ); ?></td></tr>
-				<tr><td><code>POST</code></td><td><code>/checkout/order</code></td><td><?php esc_html_e( 'Place order', 'ai-shopping' ); ?></td></tr>
-				<tr><td><code>GET</code></td><td><code>/orders/{id}</code></td><td><?php esc_html_e( 'Order details', 'ai-shopping' ); ?></td></tr>
-				<tr><td><code>GET</code></td><td><code>/store</code></td><td><?php esc_html_e( 'Store configuration', 'ai-shopping' ); ?></td></tr>
+				<tr><td><code>GET</code></td><td><code>/products</code></td><td><?php esc_html_e( 'Search and filter products', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
+				<tr><td><code>GET</code></td><td><code>/products/{id}</code></td><td><?php esc_html_e( 'Product detail with variations', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
+				<tr><td><code>GET</code></td><td><code>/categories</code></td><td><?php esc_html_e( 'Product categories', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
+				<tr><td><code>POST</code></td><td><code>/cart</code></td><td><?php esc_html_e( 'Create cart session', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
+				<tr><td><code>GET</code></td><td><code>/cart</code></td><td><?php esc_html_e( 'Get cart with totals', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
+				<tr><td><code>POST</code></td><td><code>/cart/items</code></td><td><?php esc_html_e( 'Add item to cart', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
+				<tr><td><code>POST</code></td><td><code>/checkout/order</code></td><td><?php esc_html_e( 'Place order', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
+				<tr><td><code>GET</code></td><td><code>/orders/{id}</code></td><td><?php esc_html_e( 'Order details', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
+				<tr><td><code>GET</code></td><td><code>/store</code></td><td><?php esc_html_e( 'Store configuration', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
 			</tbody>
 		</table>
 
-		<h3><?php esc_html_e( 'ACP (Agentic Commerce Protocol)', 'ai-shopping' ); ?></h3>
+		<h3><?php esc_html_e( 'ACP (Agentic Commerce Protocol)', '211j-ai-shopping-for-woocommerce' ); ?></h3>
 		<table class="widefat striped">
-			<thead><tr><th><?php esc_html_e( 'Method', 'ai-shopping' ); ?></th><th><?php esc_html_e( 'Endpoint', 'ai-shopping' ); ?></th><th><?php esc_html_e( 'Description', 'ai-shopping' ); ?></th></tr></thead>
+			<thead><tr><th><?php esc_html_e( 'Method', '211j-ai-shopping-for-woocommerce' ); ?></th><th><?php esc_html_e( 'Endpoint', '211j-ai-shopping-for-woocommerce' ); ?></th><th><?php esc_html_e( 'Description', '211j-ai-shopping-for-woocommerce' ); ?></th></tr></thead>
 			<tbody>
-				<tr><td><code>POST</code></td><td><code>/acp/checkout</code></td><td><?php esc_html_e( 'Create ACP checkout', 'ai-shopping' ); ?></td></tr>
-				<tr><td><code>POST</code></td><td><code>/acp/checkout/{id}</code></td><td><?php esc_html_e( 'Update checkout', 'ai-shopping' ); ?></td></tr>
-				<tr><td><code>POST</code></td><td><code>/acp/checkout/{id}/complete</code></td><td><?php esc_html_e( 'Complete checkout', 'ai-shopping' ); ?></td></tr>
-				<tr><td><code>DELETE</code></td><td><code>/acp/checkout/{id}</code></td><td><?php esc_html_e( 'Cancel checkout', 'ai-shopping' ); ?></td></tr>
+				<tr><td><code>POST</code></td><td><code>/acp/checkout</code></td><td><?php esc_html_e( 'Create ACP checkout', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
+				<tr><td><code>POST</code></td><td><code>/acp/checkout/{id}</code></td><td><?php esc_html_e( 'Update checkout', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
+				<tr><td><code>POST</code></td><td><code>/acp/checkout/{id}/complete</code></td><td><?php esc_html_e( 'Complete checkout', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
+				<tr><td><code>DELETE</code></td><td><code>/acp/checkout/{id}</code></td><td><?php esc_html_e( 'Cancel checkout', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
 			</tbody>
 		</table>
 
-		<h3><?php esc_html_e( 'UCP (Universal Commerce Protocol)', 'ai-shopping' ); ?></h3>
+		<h3><?php esc_html_e( 'UCP (Universal Commerce Protocol)', '211j-ai-shopping-for-woocommerce' ); ?></h3>
 		<table class="widefat striped">
-			<thead><tr><th><?php esc_html_e( 'Method', 'ai-shopping' ); ?></th><th><?php esc_html_e( 'Endpoint', 'ai-shopping' ); ?></th><th><?php esc_html_e( 'Description', 'ai-shopping' ); ?></th></tr></thead>
+			<thead><tr><th><?php esc_html_e( 'Method', '211j-ai-shopping-for-woocommerce' ); ?></th><th><?php esc_html_e( 'Endpoint', '211j-ai-shopping-for-woocommerce' ); ?></th><th><?php esc_html_e( 'Description', '211j-ai-shopping-for-woocommerce' ); ?></th></tr></thead>
 			<tbody>
-				<tr><td></td><td><code>/.well-known/ucp</code></td><td><?php esc_html_e( 'Merchant profile', 'ai-shopping' ); ?></td></tr>
-				<tr><td><code>POST</code></td><td><code>/ucp/negotiate</code></td><td><?php esc_html_e( 'Capability negotiation', 'ai-shopping' ); ?></td></tr>
-				<tr><td><code>GET</code></td><td><code>/ucp/catalog/search</code></td><td><?php esc_html_e( 'Product search', 'ai-shopping' ); ?></td></tr>
-				<tr><td><code>POST</code></td><td><code>/ucp/checkout</code></td><td><?php esc_html_e( 'Create UCP session', 'ai-shopping' ); ?></td></tr>
+				<tr><td></td><td><code>/.well-known/ucp</code></td><td><?php esc_html_e( 'Merchant profile', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
+				<tr><td><code>POST</code></td><td><code>/ucp/negotiate</code></td><td><?php esc_html_e( 'Capability negotiation', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
+				<tr><td><code>GET</code></td><td><code>/ucp/catalog/search</code></td><td><?php esc_html_e( 'Product search', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
+				<tr><td><code>POST</code></td><td><code>/ucp/checkout</code></td><td><?php esc_html_e( 'Create UCP session', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
 			</tbody>
 		</table>
 
-		<h3><?php esc_html_e( 'MCP (Model Context Protocol)', 'ai-shopping' ); ?></h3>
+		<h3><?php esc_html_e( 'MCP (Model Context Protocol)', '211j-ai-shopping-for-woocommerce' ); ?></h3>
 		<table class="widefat striped">
-			<thead><tr><th><?php esc_html_e( 'Method', 'ai-shopping' ); ?></th><th><?php esc_html_e( 'Endpoint', 'ai-shopping' ); ?></th><th><?php esc_html_e( 'Description', 'ai-shopping' ); ?></th></tr></thead>
+			<thead><tr><th><?php esc_html_e( 'Method', '211j-ai-shopping-for-woocommerce' ); ?></th><th><?php esc_html_e( 'Endpoint', '211j-ai-shopping-for-woocommerce' ); ?></th><th><?php esc_html_e( 'Description', '211j-ai-shopping-for-woocommerce' ); ?></th></tr></thead>
 			<tbody>
-				<tr><td><code>GET</code></td><td><code>/mcp/tools</code></td><td><?php esc_html_e( 'List available MCP tools', 'ai-shopping' ); ?></td></tr>
-				<tr><td><code>POST</code></td><td><code>/mcp/tools/{tool}</code></td><td><?php esc_html_e( 'Execute MCP tool', 'ai-shopping' ); ?></td></tr>
+				<tr><td><code>GET</code></td><td><code>/mcp/tools</code></td><td><?php esc_html_e( 'List available MCP tools', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
+				<tr><td><code>POST</code></td><td><code>/mcp/tools/{tool}</code></td><td><?php esc_html_e( 'Execute MCP tool', '211j-ai-shopping-for-woocommerce' ); ?></td></tr>
 			</tbody>
 		</table>
 		<?php
@@ -379,72 +379,72 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 		// Show cache cleared notice.
 		if ( isset( $_GET['cache_cleared'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			echo '<div class="notice notice-success is-dismissible"><p>';
-			esc_html_e( 'Product feed cache cleared.', 'ai-shopping' );
+			esc_html_e( 'Product feed cache cleared.', '211j-ai-shopping-for-woocommerce' );
 			echo '</p></div>';
 		}
 
 		$mechanisms = array(
 			array(
-				'name'   => __( 'Schema.org Enhancement', 'ai-shopping' ),
+				'name'   => __( 'Schema.org Enhancement', '211j-ai-shopping-for-woocommerce' ),
 				'option' => 'ais_enable_schema_enhancement',
 				'test'   => null,
-				'desc'   => __( 'Enhanced JSON-LD on product pages', 'ai-shopping' ),
+				'desc'   => __( 'Enhanced JSON-LD on product pages', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
-				'name'   => __( 'Agent Card', 'ai-shopping' ),
+				'name'   => __( 'Agent Card', '211j-ai-shopping-for-woocommerce' ),
 				'option' => 'ais_enable_agent_json',
 				'test'   => home_url( '/.well-known/agent.json' ),
-				'desc'   => __( 'A2A discovery at /.well-known/agent.json', 'ai-shopping' ),
+				'desc'   => __( 'A2A discovery at /.well-known/agent.json', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
-				'name'   => __( 'LLMs.txt', 'ai-shopping' ),
+				'name'   => __( 'LLMs.txt', '211j-ai-shopping-for-woocommerce' ),
 				'option' => 'ais_enable_llms_txt',
 				'test'   => home_url( '/llms.txt' ),
-				'desc'   => __( 'Plain text store overview at /llms.txt', 'ai-shopping' ),
+				'desc'   => __( 'Plain text store overview at /llms.txt', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
-				'name'   => __( 'Product Feed', 'ai-shopping' ),
+				'name'   => __( 'Product Feed', '211j-ai-shopping-for-woocommerce' ),
 				'option' => 'ais_enable_product_feed',
 				'test'   => home_url( '/ai-shopping-feed.json' ),
-				'desc'   => __( 'Full product catalog at /ai-shopping-feed.json', 'ai-shopping' ),
+				'desc'   => __( 'Full product catalog at /ai-shopping-feed.json', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
-				'name'   => __( 'Markdown Negotiation', 'ai-shopping' ),
+				'name'   => __( 'Markdown Negotiation', '211j-ai-shopping-for-woocommerce' ),
 				'option' => 'ais_enable_markdown_negotiation',
 				'test'   => null,
-				'desc'   => __( 'Serves markdown on product pages when Accept: text/markdown', 'ai-shopping' ),
+				'desc'   => __( 'Serves markdown on product pages when Accept: text/markdown', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
-				'name'   => __( 'HTTP Headers', 'ai-shopping' ),
+				'name'   => __( 'HTTP Headers', '211j-ai-shopping-for-woocommerce' ),
 				'option' => null,
 				'test'   => null,
-				'desc'   => __( 'X-AI-Shopping + Link headers on every response', 'ai-shopping' ),
+				'desc'   => __( 'X-AI-Shopping + Link headers on every response', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
-				'name'   => __( 'HTML Head Tags', 'ai-shopping' ),
+				'name'   => __( 'HTML Head Tags', '211j-ai-shopping-for-woocommerce' ),
 				'option' => null,
 				'test'   => null,
-				'desc'   => __( 'link rel="ai-commerce" + meta tags in <head>', 'ai-shopping' ),
+				'desc'   => __( 'link rel="ai-commerce" + meta tags in <head>', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
-				'name'   => __( 'robots.txt', 'ai-shopping' ),
+				'name'   => __( 'robots.txt', '211j-ai-shopping-for-woocommerce' ),
 				'option' => null,
 				'test'   => home_url( '/robots.txt' ),
-				'desc'   => __( 'Allow directives for discovery endpoints', 'ai-shopping' ),
+				'desc'   => __( 'Allow directives for discovery endpoints', '211j-ai-shopping-for-woocommerce' ),
 			),
 		);
 		?>
 		<hr />
-		<h2><?php esc_html_e( 'AI Discovery Status', 'ai-shopping' ); ?></h2>
-		<p><?php esc_html_e( 'These mechanisms make your store discoverable by AI agents. All are enabled by default.', 'ai-shopping' ); ?></p>
+		<h2><?php esc_html_e( 'AI Discovery Status', '211j-ai-shopping-for-woocommerce' ); ?></h2>
+		<p><?php esc_html_e( 'These mechanisms make your store discoverable by AI agents. All are enabled by default.', '211j-ai-shopping-for-woocommerce' ); ?></p>
 
 		<table class="widefat striped">
 			<thead>
 				<tr>
-					<th><?php esc_html_e( 'Mechanism', 'ai-shopping' ); ?></th>
-					<th><?php esc_html_e( 'Status', 'ai-shopping' ); ?></th>
-					<th><?php esc_html_e( 'Description', 'ai-shopping' ); ?></th>
-					<th><?php esc_html_e( 'Test', 'ai-shopping' ); ?></th>
+					<th><?php esc_html_e( 'Mechanism', '211j-ai-shopping-for-woocommerce' ); ?></th>
+					<th><?php esc_html_e( 'Status', '211j-ai-shopping-for-woocommerce' ); ?></th>
+					<th><?php esc_html_e( 'Description', '211j-ai-shopping-for-woocommerce' ); ?></th>
+					<th><?php esc_html_e( 'Test', '211j-ai-shopping-for-woocommerce' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -452,13 +452,13 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 					<?php
 					if ( ! $master_enabled ) {
 						$status      = false;
-						$status_text = __( 'Disabled (master toggle off)', 'ai-shopping' );
+						$status_text = __( 'Disabled (master toggle off)', '211j-ai-shopping-for-woocommerce' );
 					} elseif ( null === $mech['option'] ) {
 						$status      = true;
-						$status_text = __( 'Active', 'ai-shopping' );
+						$status_text = __( 'Active', '211j-ai-shopping-for-woocommerce' );
 					} else {
 						$status      = 'yes' === get_option( $mech['option'], 'yes' );
-						$status_text = $status ? __( 'Enabled', 'ai-shopping' ) : __( 'Disabled', 'ai-shopping' );
+						$status_text = $status ? __( 'Enabled', '211j-ai-shopping-for-woocommerce' ) : __( 'Disabled', '211j-ai-shopping-for-woocommerce' );
 					}
 					?>
 					<tr>
@@ -474,7 +474,7 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 						<td>
 							<?php if ( $mech['test'] ) : ?>
 								<a href="<?php echo esc_url( $mech['test'] ); ?>" target="_blank" class="button button-small">
-									<?php esc_html_e( 'Test', 'ai-shopping' ); ?>
+									<?php esc_html_e( 'Test', '211j-ai-shopping-for-woocommerce' ); ?>
 								</a>
 							<?php else : ?>
 								&mdash;
@@ -486,12 +486,12 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 		</table>
 
 		<hr />
-		<h2><?php esc_html_e( 'Product Feed Cache', 'ai-shopping' ); ?></h2>
-		<p><?php esc_html_e( 'The product feed is cached for 1 hour and automatically refreshed when products are added, updated, or deleted.', 'ai-shopping' ); ?></p>
+		<h2><?php esc_html_e( 'Product Feed Cache', '211j-ai-shopping-for-woocommerce' ); ?></h2>
+		<p><?php esc_html_e( 'The product feed is cached for 1 hour and automatically refreshed when products are added, updated, or deleted.', '211j-ai-shopping-for-woocommerce' ); ?></p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<?php wp_nonce_field( 'ais_clear_feed_cache' ); ?>
 			<input type="hidden" name="action" value="ais_clear_feed_cache" />
-			<?php submit_button( __( 'Clear Feed Cache Now', 'ai-shopping' ), 'secondary' ); ?>
+			<?php submit_button( __( 'Clear Feed Cache Now', '211j-ai-shopping-for-woocommerce' ), 'secondary' ); ?>
 		</form>
 		<?php
 	}

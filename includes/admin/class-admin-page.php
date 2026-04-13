@@ -31,7 +31,7 @@ class Admin_Page {
 		check_admin_referer( 'ais_clear_feed_cache' );
 
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
-			wp_die( esc_html__( 'Unauthorized.', 'ai-shopping' ) );
+			wp_die( esc_html__( 'Unauthorized.', '211j-ai-shopping-for-woocommerce' ) );
 		}
 
 		delete_transient( 'ais_product_feed' );

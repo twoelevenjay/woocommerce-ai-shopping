@@ -1,6 +1,6 @@
 <?php
 /**
- * Uninstall AI Shopping for WooCommerce.
+ * Uninstall 211j AI Shopping for WooCommerce.
  *
  * Removes all plugin data: custom tables, options, transients.
  *

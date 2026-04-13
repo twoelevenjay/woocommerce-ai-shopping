@@ -224,7 +224,7 @@ class Products extends REST_Controller {
 		$product = wc_get_product( (int) $request['id'] );
 
 		if ( ! $product || 'publish' !== $product->get_status() ) {
-			return $this->error_response( 'product_not_found', __( 'Product not found.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'product_not_found', __( 'Product not found.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		$data = $this->format_product_detail( $product );
@@ -244,7 +244,7 @@ class Products extends REST_Controller {
 		if ( ! $product || ! $product->is_type( 'variable' ) ) {
 			return $this->error_response(
 				'invalid_product',
-				__( 'Product not found or is not a variable product.', 'ai-shopping' ),
+				__( 'Product not found or is not a variable product.', '211j-ai-shopping-for-woocommerce' ),
 				404,
 				$request
 			);
@@ -356,7 +356,7 @@ class Products extends REST_Controller {
 	public function list_attribute_terms( $request ) {
 		$attribute = wc_get_attribute( (int) $request['id'] );
 		if ( ! $attribute ) {
-			return $this->error_response( 'attribute_not_found', __( 'Attribute not found.', 'ai-shopping' ), 404, $request );
+			return $this->error_response( 'attribute_not_found', __( 'Attribute not found.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
 
 		$taxonomy = $attribute->slug;
