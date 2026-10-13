@@ -60,6 +60,12 @@ class Discovery {
 	 * Register rewrite rules for discovery endpoints.
 	 */
 	public function register_rewrite_rules() {
+		// Flush once per plugin version so updates pick up the rules without reactivation.
+		if ( AIS_VERSION !== get_option( 'ais_rewrite_version' ) ) {
+			update_option( 'ais_rewrite_version', AIS_VERSION );
+			add_action( 'wp_loaded', 'flush_rewrite_rules' );
+		}
+
 		// /.well-known/agent.json
 		add_rewrite_rule( '^\.well-known/agent\.json/?$', 'index.php?ais_discovery_endpoint=agent_json', 'top' );
 
@@ -108,12 +114,44 @@ class Discovery {
 	}
 
 	/**
+	 * Map the current request path to a discovery endpoint, or an empty string.
+	 *
+	 * @return string
+	 */
+	private function match_request_path() {
+		if ( empty( $_SERVER['REQUEST_URI'] ) ) {
+			return '';
+		}
+
+		$uri  = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+		$path = untrailingslashit( (string) wp_parse_url( $uri, PHP_URL_PATH ) );
+		$home = untrailingslashit( (string) wp_parse_url( home_url(), PHP_URL_PATH ) );
+		if ( '' !== $home && 0 === strpos( $path, $home ) ) {
+			$path = substr( $path, strlen( $home ) );
+		}
+
+		$map = array(
+			'/.well-known/agent.json' => 'agent_json',
+			'/llms.txt'               => 'llms_txt',
+			'/ai-shopping-feed.json'  => 'product_feed',
+		);
+
+		return isset( $map[ $path ] ) ? $map[ $path ] : '';
+	}
+
+	/**
 	 * Handle discovery endpoint requests.
 	 */
 	public function handle_discovery_endpoints() {
 		$endpoint = get_query_var( 'ais_discovery_endpoint' );
 		if ( ! $endpoint ) {
-			return;
+			// Fallback when the rewrite rules were never flushed (for example after
+			// an update without reactivation): match the request path directly.
+			$endpoint = $this->match_request_path();
+			if ( ! $endpoint ) {
+				return;
+			}
+			status_header( 200 );
 		}
 
 		switch ( $endpoint ) {

@@ -2,6 +2,9 @@
 
 ## Changelog
 
+### Unreleased
+* Discovery endpoints (/.well-known/agent.json, /llms.txt, /ai-shopping-feed.json) now also resolve when rewrite rules were not flushed, and rules are flushed once per plugin version.
+
 ### 1.1.1 03.18.2026
 * Plugin check fixes for WordPress.org submission compliance.
 * Version bump for resubmission.
