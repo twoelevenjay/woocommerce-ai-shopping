@@ -2,10 +2,10 @@
 /**
  * Rate limiter.
  *
- * @package AIShopping\Security
+ * @package TwoElevenJay\AIShopping\Security
  */
 
-namespace AIShopping\Security;
+namespace TwoElevenJay\AIShopping\Security;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Rate_Limiter {
 
-	const TABLE = 'ais_rate_limits';
+	const TABLE = 'twoelevenjay_ais_rate_limits';
 
 	/**
 	 * Create the rate limits table.
@@ -47,7 +47,7 @@ class Rate_Limiter {
 	public static function check( $operation = 'read' ) {
 		$bucket = 'write' === $operation ? 'write' : 'read';
 
-		$default_option = 'write' === $operation ? 'ais_rate_limit_write' : 'ais_rate_limit_read';
+		$default_option = 'write' === $operation ? 'twoelevenjay_ais_rate_limit_write' : 'twoelevenjay_ais_rate_limit_read';
 		$limit          = (int) get_option( $default_option, 'write' === $operation ? 30 : 60 );
 
 		if ( 0 === $limit ) {
@@ -139,13 +139,27 @@ class Rate_Limiter {
 	/**
 	 * Get the client IP address.
 	 *
+	 * Uses REMOTE_ADDR. Proxy headers can be set by any client, so they are only
+	 * read when the site opts in through the twoelevenjay_ais_trust_proxy_headers
+	 * filter (for stores behind a known reverse proxy or CDN).
+	 *
 	 * @return string
 	 */
 	private static function get_client_ip() {
-		$headers = array( 'HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP', 'REMOTE_ADDR' );
+		$headers = array( 'REMOTE_ADDR' );
+
+		/**
+		 * Filter whether X-Forwarded-For and X-Real-IP are trusted for rate limiting.
+		 *
+		 * @param bool $trust Default false.
+		 */
+		if ( apply_filters( 'twoelevenjay_ais_trust_proxy_headers', false ) ) {
+			$headers = array( 'HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP', 'REMOTE_ADDR' );
+		}
+
 		foreach ( $headers as $header ) {
 			if ( ! empty( $_SERVER[ $header ] ) ) {
-				// X-Forwarded-For may contain multiple IPs — take the first.
+				// X-Forwarded-For may contain multiple IPs: take the first.
 				$ip = strtok( sanitize_text_field( wp_unslash( $_SERVER[ $header ] ) ), ',' );
 				$ip = trim( $ip );
 				if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {

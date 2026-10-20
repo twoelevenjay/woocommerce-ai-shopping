@@ -1,15 +1,15 @@
 <?php
 /**
- * AI Discovery Layer — central orchestrator.
+ * AI Discovery Layer: central orchestrator.
  *
  * Registers all hooks that make the store discoverable by AI agents:
  * rewrite rules, content negotiation, head tags, HTTP headers, robots.txt,
  * and dynamic endpoints (agent.json, llms.txt, product feed).
  *
- * @package AIShopping\Discovery
+ * @package TwoElevenJay\AIShopping\Discovery
  */
 
-namespace AIShopping\Discovery;
+namespace TwoElevenJay\AIShopping\Discovery;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,26 +19,29 @@ defined( 'ABSPATH' ) || exit;
 class Discovery {
 
 	/**
-	 * Constructor — wire up all discovery hooks.
+	 * Constructor: wire up all discovery hooks.
 	 */
 	public function __construct() {
-		if ( 'yes' !== get_option( 'ais_enable_discovery', 'yes' ) ) {
+		if ( 'yes' !== get_option( 'twoelevenjay_ais_enable_discovery', 'yes' ) ) {
 			return;
 		}
 
 		// Schema.org enhancement.
-		if ( 'yes' === get_option( 'ais_enable_schema_enhancement', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_schema_enhancement', 'yes' ) ) {
 			new Schema_Enhancer();
 		}
 
 		// Rewrite rules for discovery endpoints.
 		add_action( 'init', array( $this, 'register_rewrite_rules' ) );
 
-		// Content negotiation (priority 1 — before other template_redirect handlers).
+		// Content negotiation (priority 1: before other template_redirect handlers).
 		add_action( 'template_redirect', array( $this, 'handle_content_negotiation' ), 1 );
 
 		// Discovery endpoints (priority 10).
 		add_action( 'template_redirect', array( $this, 'handle_discovery_endpoints' ), 10 );
+
+		// Serve /llms.txt and friends without a trailing-slash redirect.
+		add_filter( 'redirect_canonical', array( $this, 'skip_canonical_redirect' ) );
 
 		// HTML head tags.
 		add_action( 'wp_head', array( $this, 'render_head_tags' ), 1 );
@@ -61,24 +64,24 @@ class Discovery {
 	 */
 	public function register_rewrite_rules() {
 		// Flush once per plugin version so updates pick up the rules without reactivation.
-		if ( AIS_VERSION !== get_option( 'ais_rewrite_version' ) ) {
-			update_option( 'ais_rewrite_version', AIS_VERSION );
+		if ( TWOELEVENJAY_AIS_VERSION !== get_option( 'twoelevenjay_ais_rewrite_version' ) ) {
+			update_option( 'twoelevenjay_ais_rewrite_version', TWOELEVENJAY_AIS_VERSION );
 			add_action( 'wp_loaded', 'flush_rewrite_rules' );
 		}
 
 		// /.well-known/agent.json
-		add_rewrite_rule( '^\.well-known/agent\.json/?$', 'index.php?ais_discovery_endpoint=agent_json', 'top' );
+		add_rewrite_rule( '^\.well-known/agent\.json/?$', 'index.php?twoelevenjay_ais_discovery_endpoint=agent_json', 'top' );
 
 		// /llms.txt
-		add_rewrite_rule( '^llms\.txt/?$', 'index.php?ais_discovery_endpoint=llms_txt', 'top' );
+		add_rewrite_rule( '^llms\.txt/?$', 'index.php?twoelevenjay_ais_discovery_endpoint=llms_txt', 'top' );
 
 		// /ai-shopping-feed.json
-		add_rewrite_rule( '^ai-shopping-feed\.json/?$', 'index.php?ais_discovery_endpoint=product_feed', 'top' );
+		add_rewrite_rule( '^ai-shopping-feed\.json/?$', 'index.php?twoelevenjay_ais_discovery_endpoint=product_feed', 'top' );
 
 		add_filter(
 			'query_vars',
 			function ( $vars ) {
-				$vars[] = 'ais_discovery_endpoint';
+				$vars[] = 'twoelevenjay_ais_discovery_endpoint';
 				return $vars;
 			}
 		);
@@ -88,7 +91,7 @@ class Discovery {
 	 * Handle Accept: text/markdown content negotiation on product pages.
 	 */
 	public function handle_content_negotiation() {
-		if ( 'yes' !== get_option( 'ais_enable_markdown_negotiation', 'yes' ) ) {
+		if ( 'yes' !== get_option( 'twoelevenjay_ais_enable_markdown_negotiation', 'yes' ) ) {
 			return;
 		}
 
@@ -140,10 +143,23 @@ class Discovery {
 	}
 
 	/**
+	 * Disable the canonical (trailing slash) redirect for discovery endpoints.
+	 *
+	 * @param string|false $redirect_url Canonical URL WordPress would redirect to.
+	 * @return string|false
+	 */
+	public function skip_canonical_redirect( $redirect_url ) {
+		if ( get_query_var( 'twoelevenjay_ais_discovery_endpoint' ) || $this->match_request_path() ) {
+			return false;
+		}
+		return $redirect_url;
+	}
+
+	/**
 	 * Handle discovery endpoint requests.
 	 */
 	public function handle_discovery_endpoints() {
-		$endpoint = get_query_var( 'ais_discovery_endpoint' );
+		$endpoint = get_query_var( 'twoelevenjay_ais_discovery_endpoint' );
 		if ( ! $endpoint ) {
 			// Fallback when the rewrite rules were never flushed (for example after
 			// an update without reactivation): match the request path directly.
@@ -172,16 +188,16 @@ class Discovery {
 	 */
 	public function render_head_tags() {
 		$agent_url = home_url( '/.well-known/agent.json' );
-		$rest_url  = rest_url( 'ai-shopping/v1' );
+		$rest_url  = rest_url( 'twoelevenjay-ais/v1' );
 
 		$protocols = array();
-		if ( 'yes' === get_option( 'ais_enable_acp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_acp', 'yes' ) ) {
 			$protocols[] = 'acp';
 		}
-		if ( 'yes' === get_option( 'ais_enable_ucp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_ucp', 'yes' ) ) {
 			$protocols[] = 'ucp';
 		}
-		if ( 'yes' === get_option( 'ais_enable_mcp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_mcp', 'yes' ) ) {
 			$protocols[] = 'mcp';
 		}
 
@@ -201,17 +217,17 @@ class Discovery {
 		}
 
 		$protocols = array();
-		if ( 'yes' === get_option( 'ais_enable_acp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_acp', 'yes' ) ) {
 			$protocols[] = 'acp';
 		}
-		if ( 'yes' === get_option( 'ais_enable_ucp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_ucp', 'yes' ) ) {
 			$protocols[] = 'ucp';
 		}
-		if ( 'yes' === get_option( 'ais_enable_mcp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_mcp', 'yes' ) ) {
 			$protocols[] = 'mcp';
 		}
 
-		header( 'X-AI-Shopping: v' . AIS_VERSION . '; protocols=' . implode( ',', $protocols ) );
+		header( 'X-AI-Shopping: v' . TWOELEVENJAY_AIS_VERSION . '; protocols=' . implode( ',', $protocols ) );
 		header( 'Link: <' . home_url( '/.well-known/agent.json' ) . '>; rel="ai-commerce"', false );
 	}
 
@@ -227,7 +243,7 @@ class Discovery {
 			return $output;
 		}
 
-		$additions  = "\n# AI Shopping Discovery\n";
+		$additions  = "\n# AI agent discovery endpoints\n";
 		$additions .= "Allow: /.well-known/agent.json\n";
 		$additions .= "Allow: /.well-known/ucp\n";
 		$additions .= "Allow: /llms.txt\n";
@@ -240,19 +256,19 @@ class Discovery {
 	 * Invalidate the product feed transient cache.
 	 */
 	public function invalidate_product_feed_cache() {
-		delete_transient( 'ais_product_feed' );
+		delete_transient( 'twoelevenjay_ais_product_feed' );
 	}
 
 	/**
 	 * Serve /.well-known/agent.json (A2A Agent Card).
 	 */
 	private function serve_agent_json() {
-		if ( 'yes' !== get_option( 'ais_enable_agent_json', 'yes' ) ) {
+		if ( 'yes' !== get_option( 'twoelevenjay_ais_enable_agent_json', 'yes' ) ) {
 			status_header( 404 );
 			exit;
 		}
 
-		$rest_base = rest_url( 'ai-shopping/v1' );
+		$rest_base = rest_url( 'twoelevenjay-ais/v1' );
 
 		$skills = array(
 			array(
@@ -290,19 +306,19 @@ class Discovery {
 		);
 
 		$protocols = array();
-		if ( 'yes' === get_option( 'ais_enable_acp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_acp', 'yes' ) ) {
 			$protocols['acp'] = array(
 				'enabled'  => true,
 				'base_url' => $rest_base . '/acp',
 			);
 		}
-		if ( 'yes' === get_option( 'ais_enable_ucp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_ucp', 'yes' ) ) {
 			$protocols['ucp'] = array(
 				'enabled'    => true,
 				'well_known' => '/.well-known/ucp',
 			);
 		}
-		if ( 'yes' === get_option( 'ais_enable_mcp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_mcp', 'yes' ) ) {
 			$protocols['mcp'] = array(
 				'enabled'  => true,
 				'base_url' => $rest_base . '/mcp',
@@ -313,15 +329,15 @@ class Discovery {
 			'name'           => get_bloginfo( 'name' ),
 			'description'    => get_bloginfo( 'description' ),
 			'url'            => home_url(),
-			'version'        => AIS_VERSION,
+			'version'        => TWOELEVENJAY_AIS_VERSION,
 			'capabilities'   => array(
 				'streaming' => false,
 			),
 			'authentication' => array(
 				'schemes' => array(
 					array(
-						'scheme' => 'bearer',
-						'description' => 'API key as Bearer token. Generate keys in WP Admin > AI Shopping > API Keys.',
+						'scheme'      => 'basic',
+						'description' => 'WordPress Application Passwords. Catalog and store reads are public; cart, checkout, order and account endpoints require a WordPress user and only return that user\'s data.',
 					),
 				),
 			),
@@ -341,38 +357,35 @@ class Discovery {
 		 *
 		 * @param array $card Agent card data.
 		 */
-		$card = apply_filters( 'ai_shopping_agent_card', $card );
+		$card = apply_filters( 'twoelevenjay_ais_agent_card', $card );
 
-		status_header( 200 );
-		header( 'Content-Type: application/json; charset=utf-8' );
-		header( 'Access-Control-Allow-Origin: *' );
-		header( 'Cache-Control: public, max-age=3600' );
-		echo wp_json_encode( $card, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
-		exit;
+		$this->send_json( $card );
 	}
 
 	/**
-	 * Serve /llms.txt — plain text store overview for LLMs.
+	 * Serve /llms.txt: plain text store overview for LLMs.
 	 */
 	private function serve_llms_txt() {
-		if ( 'yes' !== get_option( 'ais_enable_llms_txt', 'yes' ) ) {
+		if ( 'yes' !== get_option( 'twoelevenjay_ais_enable_llms_txt', 'yes' ) ) {
 			status_header( 404 );
 			exit;
 		}
 
 		$name        = get_bloginfo( 'name' );
 		$description = get_bloginfo( 'description' );
-		$rest_base   = rest_url( 'ai-shopping/v1' );
+		$rest_base   = rest_url( 'twoelevenjay-ais/v1' );
 		$currency    = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : 'USD';
 
-		$output  = "# {$name}\n";
-		$output .= "> {$description}\n\n";
+		$output = "# {$name}\n";
+		if ( $description ) {
+			$output .= "> {$description}\n";
+		}
+		$output .= "\n";
 
 		// Store basics.
 		$output .= "## Store Info\n";
 		$output .= "- URL: " . home_url() . "\n";
-		$output .= "- Currency: {$currency}\n";
-		$output .= "- Powered by: WooCommerce + AI Shopping plugin\n\n";
+		$output .= "- Currency: {$currency}\n\n";
 
 		// Product categories.
 		$categories = get_terms(
@@ -401,18 +414,18 @@ class Discovery {
 		// API access.
 		$output .= "## API Access\n";
 		$output .= "- Base URL: {$rest_base}\n";
-		$output .= "- Authentication: Bearer token (API key)\n";
+		$output .= "- Authentication: catalog reads are public; cart, checkout, order and account endpoints need WordPress Application Passwords\n";
 		$output .= "- Agent Card: " . home_url( '/.well-known/agent.json' ) . "\n\n";
 
 		// Protocols.
 		$output .= "### Protocols\n";
-		if ( 'yes' === get_option( 'ais_enable_acp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_acp', 'yes' ) ) {
 			$output .= "- ACP (Agentic Commerce Protocol): {$rest_base}/acp/\n";
 		}
-		if ( 'yes' === get_option( 'ais_enable_ucp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_ucp', 'yes' ) ) {
 			$output .= "- UCP (Universal Commerce Protocol): " . home_url( '/.well-known/ucp' ) . "\n";
 		}
-		if ( 'yes' === get_option( 'ais_enable_mcp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_mcp', 'yes' ) ) {
 			$output .= "- MCP (Model Context Protocol): {$rest_base}/mcp/tools\n";
 		}
 
@@ -429,33 +442,21 @@ class Discovery {
 		 *
 		 * @param string $output The llms.txt content.
 		 */
-		$output = apply_filters( 'ai_shopping_llms_txt', $output );
+		$output = apply_filters( 'twoelevenjay_ais_llms_txt', $output );
 
-		status_header( 200 );
-		header( 'Content-Type: text/plain; charset=utf-8' );
-		header( 'Access-Control-Allow-Origin: *' );
-		header( 'Cache-Control: public, max-age=3600' );
-		echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		exit;
+		$this->send_text( $output, 'text/plain', true );
 	}
 
 	/**
-	 * Serve /ai-shopping-feed.json — full product catalog.
+	 * Serve /ai-shopping-feed.json: full product catalog.
 	 */
 	private function serve_product_feed() {
-		if ( 'yes' !== get_option( 'ais_enable_product_feed', 'yes' ) ) {
+		if ( 'yes' !== get_option( 'twoelevenjay_ais_enable_product_feed', 'yes' ) ) {
 			status_header( 404 );
 			exit;
 		}
 
-		$feed = Product_Feed::generate();
-
-		status_header( 200 );
-		header( 'Content-Type: application/json; charset=utf-8' );
-		header( 'Access-Control-Allow-Origin: *' );
-		header( 'Cache-Control: public, max-age=3600' );
-		echo wp_json_encode( $feed, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
-		exit;
+		$this->send_json( Product_Feed::generate() );
 	}
 
 	/**
@@ -543,20 +544,16 @@ class Discovery {
 				foreach ( $var_attrs as $key => $val ) {
 					$parts[] = wc_attribute_label( $key ) . ': ' . $val;
 				}
-				$md .= '- ' . implode( ', ', $parts ) . " — {$var->get_price()} {$currency} ({$var->get_stock_status()})\n";
+				$md .= '- ' . implode( ', ', $parts ) . ", {$var->get_price()} {$currency} ({$var->get_stock_status()})\n";
 			}
 		}
 
 		// API info.
 		$md .= "\n---\n";
-		$md .= "**API:** " . rest_url( 'ai-shopping/v1/products/' . $product->get_id() ) . "\n";
+		$md .= "**API:** " . rest_url( 'twoelevenjay-ais/v1/products/' . $product->get_id() ) . "\n";
 		$md .= "**Agent Card:** " . home_url( '/.well-known/agent.json' ) . "\n";
 
-		status_header( 200 );
-		header( 'Content-Type: text/markdown; charset=utf-8' );
-		header( 'Access-Control-Allow-Origin: *' );
-		echo $md; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		exit;
+		$this->send_text( $md, 'text/markdown', false );
 	}
 
 	/**
@@ -566,13 +563,13 @@ class Discovery {
 		$name     = get_bloginfo( 'name' );
 		$currency = get_woocommerce_currency();
 
-		$md = "# {$name} — Product Catalog\n\n";
+		$md = "# {$name}: Product Catalog\n\n";
 
 		// If on a taxonomy page, show category info.
 		if ( is_product_taxonomy() ) {
 			$term = get_queried_object();
 			if ( $term ) {
-				$md  = "# {$name} — {$term->name}\n\n";
+				$md  = "# {$name}: {$term->name}\n\n";
 				if ( $term->description ) {
 					$md .= "{$term->description}\n\n";
 				}
@@ -604,12 +601,48 @@ class Discovery {
 
 		$md .= "---\n";
 		$md .= "**Full catalog feed:** " . home_url( '/ai-shopping-feed.json' ) . "\n";
-		$md .= "**API:** " . rest_url( 'ai-shopping/v1/products' ) . "\n";
+		$md .= "**API:** " . rest_url( 'twoelevenjay-ais/v1/products' ) . "\n";
 
-		status_header( 200 );
-		header( 'Content-Type: text/markdown; charset=utf-8' );
+		$this->send_text( $md, 'text/markdown', false );
+	}
+
+	/**
+	 * Send a JSON discovery document and end the request.
+	 *
+	 * @param array $data Document data.
+	 */
+	private function send_json( $data ) {
 		header( 'Access-Control-Allow-Origin: *' );
-		echo $md; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		header( 'Cache-Control: public, max-age=3600' );
+		wp_send_json( $data, 200, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
+	}
+
+	/**
+	 * Send a plain text or markdown document and end the request.
+	 *
+	 * The document is built from store, term and product data, so every line is
+	 * escaped with esc_html() at output. A leading "> " is printed as literal
+	 * markdown so the llms.txt summary stays a quote.
+	 *
+	 * @param string $text         Document body.
+	 * @param string $content_type MIME type without charset.
+	 * @param bool   $cacheable    Whether to send a one-hour public Cache-Control header.
+	 */
+	private function send_text( $text, $content_type, $cacheable ) {
+		status_header( 200 );
+		header( 'Content-Type: ' . $content_type . '; charset=utf-8' );
+		header( 'Access-Control-Allow-Origin: *' );
+		if ( $cacheable ) {
+			header( 'Cache-Control: public, max-age=3600' );
+		}
+
+		foreach ( explode( "\n", rtrim( $text, "\n" ) ) as $line ) {
+			if ( 0 === strpos( $line, '> ' ) ) {
+				echo '> ' . esc_html( substr( $line, 2 ) ) . "\n";
+			} else {
+				echo esc_html( $line ) . "\n";
+			}
+		}
 		exit;
 	}
 }

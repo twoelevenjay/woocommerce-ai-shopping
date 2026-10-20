@@ -2,10 +2,10 @@
 /**
  * Headless cart session management.
  *
- * @package AIShopping\Cart
+ * @package TwoElevenJay\AIShopping\Cart
  */
 
-namespace AIShopping\Cart;
+namespace TwoElevenJay\AIShopping\Cart;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Cart_Session {
 
-	const TABLE = 'ais_cart_sessions';
+	const TABLE = 'twoelevenjay_ais_cart_sessions';
 
 	/**
 	 * Default cart TTL: 24 hours.
@@ -32,7 +32,7 @@ class Cart_Session {
 		$sql = "CREATE TABLE {$table} (
 			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 			cart_token VARCHAR(64) NOT NULL,
-			api_key_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+			user_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
 			cart_data LONGTEXT NOT NULL,
 			customer_data LONGTEXT NOT NULL DEFAULT '',
 			expires_at DATETIME NOT NULL,
@@ -40,6 +40,7 @@ class Cart_Session {
 			updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
 			UNIQUE KEY cart_token (cart_token),
+			KEY user_id (user_id),
 			KEY expires_at (expires_at)
 		) {$charset};";
 
@@ -48,21 +49,22 @@ class Cart_Session {
 	}
 
 	/**
-	 * Create a new cart session.
+	 * Create a new cart session owned by a user.
 	 *
-	 * @param int $api_key_id The API key ID.
+	 * @param int|null $user_id Owning user ID. Defaults to the current user.
 	 * @return string The cart token.
 	 */
-	public static function create( $api_key_id = 0 ) {
+	public static function create( $user_id = null ) {
 		global $wpdb;
 
-		$token = wp_generate_password( 48, false );
+		$token   = wp_generate_password( 48, false );
+		$user_id = null === $user_id ? get_current_user_id() : (int) $user_id;
 
 		$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$wpdb->prefix . self::TABLE,
 			array(
 				'cart_token'    => $token,
-				'api_key_id'   => $api_key_id,
+				'user_id'       => $user_id,
 				'cart_data'     => wp_json_encode( array( 'items' => array(), 'coupons' => array() ) ),
 				'customer_data' => wp_json_encode( array() ),
 				'expires_at'   => gmdate( 'Y-m-d H:i:s', time() + self::DEFAULT_TTL ),
@@ -100,10 +102,42 @@ class Cart_Session {
 		return array(
 			'id'            => (int) $row['id'],
 			'token'         => $row['cart_token'],
+			'user_id'       => (int) $row['user_id'],
 			'cart_data'     => json_decode( $row['cart_data'], true ),
 			'customer_data' => json_decode( $row['customer_data'], true ),
 			'expires_at'    => $row['expires_at'],
 		);
+	}
+
+	/**
+	 * Whether the current user may read or change a session.
+	 *
+	 * Sessions belong to the user who created them; shop managers may access any.
+	 *
+	 * @param array|null $session Session as returned by load().
+	 * @return bool
+	 */
+	public static function current_user_can_access( $session ) {
+		if ( empty( $session ) || ! is_user_logged_in() ) {
+			return false;
+		}
+
+		if ( current_user_can( 'manage_woocommerce' ) ) {
+			return true;
+		}
+
+		return (int) $session['user_id'] > 0 && (int) $session['user_id'] === get_current_user_id();
+	}
+
+	/**
+	 * Load a session by token and confirm the current user may access it.
+	 *
+	 * @param string $token Cart token.
+	 * @return array|null Session, or null when missing, expired or not the user's.
+	 */
+	public static function load_for_current_user( $token ) {
+		$session = self::load( (string) $token );
+		return self::current_user_can_access( $session ) ? $session : null;
 	}
 
 	/**

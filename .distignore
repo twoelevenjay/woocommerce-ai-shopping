@@ -3,8 +3,13 @@
 .gitignore
 .distignore
 .editorconfig
+.claude-repo-claim.json
+.DS_Store
 phpcs.xml
 composer.json
 composer.lock
 node_modules
 tests
+readme.md
+CHANGELOG.md
+languages/.gitkeep

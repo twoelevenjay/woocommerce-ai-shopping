@@ -4,10 +4,10 @@
  *
  * Generates a full machine-readable product catalog cached via transient.
  *
- * @package AIShopping\Discovery
+ * @package TwoElevenJay\AIShopping\Discovery
  */
 
-namespace AIShopping\Discovery;
+namespace TwoElevenJay\AIShopping\Discovery;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,7 +19,7 @@ class Product_Feed {
 	/**
 	 * Transient key for cached feed.
 	 */
-	const CACHE_KEY = 'ais_product_feed';
+	const CACHE_KEY = 'twoelevenjay_ais_product_feed';
 
 	/**
 	 * Cache TTL in seconds (1 hour).
@@ -60,7 +60,7 @@ class Product_Feed {
 		 *
 		 * @param array $args wc_get_products arguments.
 		 */
-		$args = apply_filters( 'ai_shopping_product_feed_query_args', $args );
+		$args = apply_filters( 'twoelevenjay_ais_product_feed_query_args', $args );
 
 		$products   = array();
 		$page       = 1;
@@ -97,7 +97,7 @@ class Product_Feed {
 			'products'   => $products,
 			'total'      => count( $products ),
 			'api'        => array(
-				'base_url'   => rest_url( 'ai-shopping/v1' ),
+				'base_url'   => rest_url( 'twoelevenjay-ais/v1' ),
 				'agent_card' => home_url( '/.well-known/agent.json' ),
 			),
 		);
@@ -182,7 +182,7 @@ class Product_Feed {
 		}
 
 		// API link for detail.
-		$data['api_url'] = rest_url( 'ai-shopping/v1/products/' . $product->get_id() );
+		$data['api_url'] = rest_url( 'twoelevenjay-ais/v1/products/' . $product->get_id() );
 
 		return $data;
 	}

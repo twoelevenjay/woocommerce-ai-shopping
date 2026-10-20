@@ -1,15 +1,15 @@
 <?php
 /**
- * Webhook dispatcher — fires on WooCommerce order status transitions.
+ * Webhook dispatcher: fires on WooCommerce order status transitions.
  *
- * @package AIShopping\Webhooks
+ * @package TwoElevenJay\AIShopping\Webhooks
  */
 
-namespace AIShopping\Webhooks;
+namespace TwoElevenJay\AIShopping\Webhooks;
 
 defined( 'ABSPATH' ) || exit;
 
-use AIShopping\Security\HMAC;
+use TwoElevenJay\AIShopping\Security\HMAC;
 
 /**
  * Dispatches webhook events to registered URLs on order status changes.
@@ -17,7 +17,7 @@ use AIShopping\Security\HMAC;
 class Webhook_Dispatcher {
 
 	/**
-	 * Constructor — hook into WooCommerce order status transitions.
+	 * Constructor: hook into WooCommerce order status transitions.
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_order_status_changed', array( $this, 'on_order_status_change' ), 10, 4 );
@@ -32,7 +32,7 @@ class Webhook_Dispatcher {
 	 * @param \WC_Order $order     The order object.
 	 */
 	public function on_order_status_change( $order_id, $old_status, $new_status, $order ) {
-		$webhook_url = get_option( 'ais_webhook_url' );
+		$webhook_url = get_option( 'twoelevenjay_ais_webhook_url' );
 		if ( empty( $webhook_url ) ) {
 			return;
 		}
@@ -61,8 +61,8 @@ class Webhook_Dispatcher {
 
 		$json = wp_json_encode( $payload );
 
-		// Get webhook secret from the first active API key (or global).
-		$webhook_secret = get_option( 'ais_webhook_secret', '' );
+		// Webhook secret from settings.
+		$webhook_secret = get_option( 'twoelevenjay_ais_webhook_secret', '' );
 		$signature      = '';
 		if ( $webhook_secret ) {
 			$signature = HMAC::sign( $json, $webhook_secret );
@@ -80,6 +80,6 @@ class Webhook_Dispatcher {
 			'sslverify' => true,
 		);
 
-		wp_remote_post( $webhook_url, $args );
+		wp_safe_remote_post( $webhook_url, $args );
 	}
 }

@@ -1,11 +1,11 @@
 <?php
 /**
- * Extension detector — scans for supported WooCommerce extensions.
+ * Extension detector: scans for supported WooCommerce extensions.
  *
- * @package AIShopping\Extensions
+ * @package TwoElevenJay\AIShopping\Extensions
  */
 
-namespace AIShopping\Extensions;
+namespace TwoElevenJay\AIShopping\Extensions;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -17,7 +17,7 @@ class Extension_Detector {
 	/**
 	 * Transient name for cached scan results.
 	 */
-	const TRANSIENT = 'ais_extension_scan';
+	const TRANSIENT = 'twoelevenjay_ais_extension_scan';
 
 	/**
 	 * Map of extension slug → detection data.

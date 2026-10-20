@@ -16,4 +16,4 @@ jobs:
       env:
         SVN_PASSWORD: ${{ secrets.WORDPRESS_PASSWORD }}
         SVN_USERNAME: ${{ secrets.WORDPRESS_USERNAME }}
-        SLUG: ai-shopping
+        SLUG: 211j-ai-shopping-for-woocommerce
