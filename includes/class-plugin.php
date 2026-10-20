@@ -62,6 +62,7 @@ class Plugin {
 		// UCP well-known endpoint.
 		add_action( 'init', array( $this, 'register_wellknown_rewrite' ) );
 		add_action( 'template_redirect', array( $this, 'handle_wellknown' ) );
+		add_filter( 'redirect_canonical', array( $this, 'skip_wellknown_canonical_redirect' ) );
 
 		// Webhook dispatcher.
 		new Webhooks\Webhook_Dispatcher();
@@ -156,6 +157,16 @@ class Plugin {
 	}
 
 	/**
+	 * Disable the canonical (trailing slash) redirect for /.well-known/ucp.
+	 *
+	 * @param string|false $redirect_url Canonical URL WordPress would redirect to.
+	 * @return string|false
+	 */
+	public function skip_wellknown_canonical_redirect( $redirect_url ) {
+		return get_query_var( 'twoelevenjay_ais_wellknown_ucp' ) ? false : $redirect_url;
+	}
+
+	/**
 	 * Handle /.well-known/ucp requests.
 	 */
 	public function handle_wellknown() {
@@ -171,10 +182,7 @@ class Plugin {
 		$adapter = new Protocols\UCP_Adapter();
 		$profile = $adapter->get_merchant_profile();
 
-		status_header( 200 );
-		header( 'Content-Type: application/json; charset=utf-8' );
 		header( 'Access-Control-Allow-Origin: *' );
-		echo wp_json_encode( $profile );
-		exit;
+		wp_send_json( $profile, 200 );
 	}
 }

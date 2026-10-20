@@ -241,7 +241,11 @@ class Schema_Enhancer {
 			),
 		);
 
-		echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
+		// JSON_HEX_TAG keeps "</script>" in any value from closing the tag early.
+		wp_print_inline_script_tag(
+			wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ),
+			array( 'type' => 'application/ld+json' )
+		);
 	}
 
 	/**

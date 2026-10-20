@@ -40,6 +40,9 @@ class Discovery {
 		// Discovery endpoints (priority 10).
 		add_action( 'template_redirect', array( $this, 'handle_discovery_endpoints' ), 10 );
 
+		// Serve /llms.txt and friends without a trailing-slash redirect.
+		add_filter( 'redirect_canonical', array( $this, 'skip_canonical_redirect' ) );
+
 		// HTML head tags.
 		add_action( 'wp_head', array( $this, 'render_head_tags' ), 1 );
 
@@ -140,6 +143,19 @@ class Discovery {
 	}
 
 	/**
+	 * Disable the canonical (trailing slash) redirect for discovery endpoints.
+	 *
+	 * @param string|false $redirect_url Canonical URL WordPress would redirect to.
+	 * @return string|false
+	 */
+	public function skip_canonical_redirect( $redirect_url ) {
+		if ( get_query_var( 'twoelevenjay_ais_discovery_endpoint' ) || $this->match_request_path() ) {
+			return false;
+		}
+		return $redirect_url;
+	}
+
+	/**
 	 * Handle discovery endpoint requests.
 	 */
 	public function handle_discovery_endpoints() {
@@ -227,7 +243,7 @@ class Discovery {
 			return $output;
 		}
 
-		$additions  = "\n# AI Shopping Discovery\n";
+		$additions  = "\n# AI agent discovery endpoints\n";
 		$additions .= "Allow: /.well-known/agent.json\n";
 		$additions .= "Allow: /.well-known/ucp\n";
 		$additions .= "Allow: /llms.txt\n";
@@ -320,8 +336,8 @@ class Discovery {
 			'authentication' => array(
 				'schemes' => array(
 					array(
-						'scheme' => 'bearer',
-						'description' => 'API key as Bearer token. Generate keys in WP Admin > AI Shopping > API Keys.',
+						'scheme'      => 'basic',
+						'description' => 'WordPress Application Passwords. Catalog and store reads are public; cart, checkout, order and account endpoints require a WordPress user and only return that user\'s data.',
 					),
 				),
 			),
@@ -343,12 +359,7 @@ class Discovery {
 		 */
 		$card = apply_filters( 'twoelevenjay_ais_agent_card', $card );
 
-		status_header( 200 );
-		header( 'Content-Type: application/json; charset=utf-8' );
-		header( 'Access-Control-Allow-Origin: *' );
-		header( 'Cache-Control: public, max-age=3600' );
-		echo wp_json_encode( $card, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
-		exit;
+		$this->send_json( $card );
 	}
 
 	/**
@@ -365,14 +376,16 @@ class Discovery {
 		$rest_base   = rest_url( 'twoelevenjay-ais/v1' );
 		$currency    = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : 'USD';
 
-		$output  = "# {$name}\n";
-		$output .= "> {$description}\n\n";
+		$output = "# {$name}\n";
+		if ( $description ) {
+			$output .= "> {$description}\n";
+		}
+		$output .= "\n";
 
 		// Store basics.
 		$output .= "## Store Info\n";
 		$output .= "- URL: " . home_url() . "\n";
-		$output .= "- Currency: {$currency}\n";
-		$output .= "- Powered by: WooCommerce + AI Shopping plugin\n\n";
+		$output .= "- Currency: {$currency}\n\n";
 
 		// Product categories.
 		$categories = get_terms(
@@ -401,7 +414,7 @@ class Discovery {
 		// API access.
 		$output .= "## API Access\n";
 		$output .= "- Base URL: {$rest_base}\n";
-		$output .= "- Authentication: Bearer token (API key)\n";
+		$output .= "- Authentication: catalog reads are public; cart, checkout, order and account endpoints need WordPress Application Passwords\n";
 		$output .= "- Agent Card: " . home_url( '/.well-known/agent.json' ) . "\n\n";
 
 		// Protocols.
@@ -431,12 +444,7 @@ class Discovery {
 		 */
 		$output = apply_filters( 'twoelevenjay_ais_llms_txt', $output );
 
-		status_header( 200 );
-		header( 'Content-Type: text/plain; charset=utf-8' );
-		header( 'Access-Control-Allow-Origin: *' );
-		header( 'Cache-Control: public, max-age=3600' );
-		echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		exit;
+		$this->send_text( $output, 'text/plain', true );
 	}
 
 	/**
@@ -448,14 +456,7 @@ class Discovery {
 			exit;
 		}
 
-		$feed = Product_Feed::generate();
-
-		status_header( 200 );
-		header( 'Content-Type: application/json; charset=utf-8' );
-		header( 'Access-Control-Allow-Origin: *' );
-		header( 'Cache-Control: public, max-age=3600' );
-		echo wp_json_encode( $feed, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
-		exit;
+		$this->send_json( Product_Feed::generate() );
 	}
 
 	/**
@@ -552,11 +553,7 @@ class Discovery {
 		$md .= "**API:** " . rest_url( 'twoelevenjay-ais/v1/products/' . $product->get_id() ) . "\n";
 		$md .= "**Agent Card:** " . home_url( '/.well-known/agent.json' ) . "\n";
 
-		status_header( 200 );
-		header( 'Content-Type: text/markdown; charset=utf-8' );
-		header( 'Access-Control-Allow-Origin: *' );
-		echo $md; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		exit;
+		$this->send_text( $md, 'text/markdown', false );
 	}
 
 	/**
@@ -606,10 +603,46 @@ class Discovery {
 		$md .= "**Full catalog feed:** " . home_url( '/ai-shopping-feed.json' ) . "\n";
 		$md .= "**API:** " . rest_url( 'twoelevenjay-ais/v1/products' ) . "\n";
 
-		status_header( 200 );
-		header( 'Content-Type: text/markdown; charset=utf-8' );
+		$this->send_text( $md, 'text/markdown', false );
+	}
+
+	/**
+	 * Send a JSON discovery document and end the request.
+	 *
+	 * @param array $data Document data.
+	 */
+	private function send_json( $data ) {
 		header( 'Access-Control-Allow-Origin: *' );
-		echo $md; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		header( 'Cache-Control: public, max-age=3600' );
+		wp_send_json( $data, 200, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
+	}
+
+	/**
+	 * Send a plain text or markdown document and end the request.
+	 *
+	 * The document is built from store, term and product data, so every line is
+	 * escaped with esc_html() at output. A leading "> " is printed as literal
+	 * markdown so the llms.txt summary stays a quote.
+	 *
+	 * @param string $text         Document body.
+	 * @param string $content_type MIME type without charset.
+	 * @param bool   $cacheable    Whether to send a one-hour public Cache-Control header.
+	 */
+	private function send_text( $text, $content_type, $cacheable ) {
+		status_header( 200 );
+		header( 'Content-Type: ' . $content_type . '; charset=utf-8' );
+		header( 'Access-Control-Allow-Origin: *' );
+		if ( $cacheable ) {
+			header( 'Cache-Control: public, max-age=3600' );
+		}
+
+		foreach ( explode( "\n", rtrim( $text, "\n" ) ) as $line ) {
+			if ( 0 === strpos( $line, '> ' ) ) {
+				echo '> ' . esc_html( substr( $line, 2 ) ) . "\n";
+			} else {
+				echo esc_html( $line ) . "\n";
+			}
+		}
 		exit;
 	}
 }
