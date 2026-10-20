@@ -2,10 +2,10 @@
 /**
  * Products REST API endpoint.
  *
- * @package AIShopping\Api
+ * @package TwoElevenJay\AIShopping\Api
  */
 
-namespace AIShopping\Api;
+namespace TwoElevenJay\AIShopping\Api;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -466,7 +466,7 @@ class Products extends REST_Controller {
 		 * @param array       $data    Product summary data.
 		 * @param \WC_Product $product The product.
 		 */
-		return apply_filters( 'ai_shopping_product_summary', $data, $product );
+		return apply_filters( 'twoelevenjay_ais_product_summary', $data, $product );
 	}
 
 	/**
@@ -524,7 +524,7 @@ class Products extends REST_Controller {
 		 * @param array       $data    Product detail data.
 		 * @param \WC_Product $product The product.
 		 */
-		return apply_filters( 'ai_shopping_product_detail', $data, $product );
+		return apply_filters( 'twoelevenjay_ais_product_detail', $data, $product );
 	}
 
 	/**

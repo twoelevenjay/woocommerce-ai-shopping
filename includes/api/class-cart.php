@@ -2,14 +2,14 @@
 /**
  * Cart REST API endpoint.
  *
- * @package AIShopping\Api
+ * @package TwoElevenJay\AIShopping\Api
  */
 
-namespace AIShopping\Api;
+namespace TwoElevenJay\AIShopping\Api;
 
 defined( 'ABSPATH' ) || exit;
 
-use AIShopping\Cart\Cart_Session;
+use TwoElevenJay\AIShopping\Cart\Cart_Session;
 
 /**
  * Headless cart management: create, add items, update, remove, coupons.
@@ -102,7 +102,7 @@ class Cart extends REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function create_cart( $request ) {
-		$key_row = $request->get_param( '_ais_key' );
+		$key_row = $request->get_param( '_twoelevenjay_ais_key' );
 		$key_id  = $key_row ? $key_row['id'] : 0;
 
 		$token = Cart_Session::create( $key_id );

@@ -5,14 +5,14 @@
  * Adds an "AI Shopping" tab to WooCommerce > Settings with 4 sections:
  * General, Discovery, Extensions, Endpoints.
  *
- * @package AIShopping\Admin
+ * @package TwoElevenJay\AIShopping\Admin
  */
 
-namespace AIShopping\Admin;
+namespace TwoElevenJay\AIShopping\Admin;
 
 defined( 'ABSPATH' ) || exit;
 
-use AIShopping\Extensions\Extension_Detector;
+use TwoElevenJay\AIShopping\Extensions\Extension_Detector;
 
 /**
  * WC_Settings_AI_Shopping class.
@@ -58,43 +58,43 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 				'title' => __( 'Protocols', '211j-ai-shopping-for-woocommerce' ),
 				'type'  => 'title',
 				'desc'  => __( 'Enable or disable AI commerce protocol adapters.', '211j-ai-shopping-for-woocommerce' ),
-				'id'    => 'ais_protocols_options',
+				'id'    => 'twoelevenjay_ais_protocols_options',
 			),
 			array(
 				'title'   => __( 'Agentic Commerce Protocol (ACP)', '211j-ai-shopping-for-woocommerce' ),
-				'id'      => 'ais_enable_acp',
+				'id'      => 'twoelevenjay_ais_enable_acp',
 				'type'    => 'checkbox',
 				'default' => 'yes',
 				'desc'    => __( 'Enable ACP endpoints (OpenAI/Stripe)', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'title'   => __( 'Universal Commerce Protocol (UCP)', '211j-ai-shopping-for-woocommerce' ),
-				'id'      => 'ais_enable_ucp',
+				'id'      => 'twoelevenjay_ais_enable_ucp',
 				'type'    => 'checkbox',
 				'default' => 'yes',
 				'desc'    => __( 'Enable UCP endpoints (Shopify/Google)', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'title'   => __( 'Model Context Protocol (MCP)', '211j-ai-shopping-for-woocommerce' ),
-				'id'      => 'ais_enable_mcp',
+				'id'      => 'twoelevenjay_ais_enable_mcp',
 				'type'    => 'checkbox',
 				'default' => 'yes',
 				'desc'    => __( 'Enable MCP tools (Anthropic)', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'type' => 'sectionend',
-				'id'   => 'ais_protocols_options',
+				'id'   => 'twoelevenjay_ais_protocols_options',
 			),
 
 			// Rate Limiting.
 			array(
 				'title' => __( 'Rate Limiting', '211j-ai-shopping-for-woocommerce' ),
 				'type'  => 'title',
-				'id'    => 'ais_rate_limit_options',
+				'id'    => 'twoelevenjay_ais_rate_limit_options',
 			),
 			array(
 				'title'             => __( 'Read requests/minute', '211j-ai-shopping-for-woocommerce' ),
-				'id'                => 'ais_rate_limit_read',
+				'id'                => 'twoelevenjay_ais_rate_limit_read',
 				'type'              => 'number',
 				'default'           => '60',
 				'css'               => 'width:80px;',
@@ -103,7 +103,7 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 			),
 			array(
 				'title'             => __( 'Write requests/minute', '211j-ai-shopping-for-woocommerce' ),
-				'id'                => 'ais_rate_limit_write',
+				'id'                => 'twoelevenjay_ais_rate_limit_write',
 				'type'              => 'number',
 				'default'           => '30',
 				'css'               => 'width:80px;',
@@ -112,57 +112,57 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 			),
 			array(
 				'type' => 'sectionend',
-				'id'   => 'ais_rate_limit_options',
+				'id'   => 'twoelevenjay_ais_rate_limit_options',
 			),
 
 			// Webhooks.
 			array(
 				'title' => __( 'Webhooks', '211j-ai-shopping-for-woocommerce' ),
 				'type'  => 'title',
-				'id'    => 'ais_webhook_options',
+				'id'    => 'twoelevenjay_ais_webhook_options',
 			),
 			array(
 				'title' => __( 'Webhook URL', '211j-ai-shopping-for-woocommerce' ),
-				'id'    => 'ais_webhook_url',
+				'id'    => 'twoelevenjay_ais_webhook_url',
 				'type'  => 'url',
 				'css'   => 'width:400px;',
 				'desc'  => __( 'URL to receive order status change events.', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'title' => __( 'Webhook Secret', '211j-ai-shopping-for-woocommerce' ),
-				'id'    => 'ais_webhook_secret',
+				'id'    => 'twoelevenjay_ais_webhook_secret',
 				'type'  => 'text',
 				'css'   => 'width:400px;',
 				'desc'  => __( 'Used to HMAC-sign webhook payloads.', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'type' => 'sectionend',
-				'id'   => 'ais_webhook_options',
+				'id'   => 'twoelevenjay_ais_webhook_options',
 			),
 
 			// Security.
 			array(
 				'title' => __( 'Security', '211j-ai-shopping-for-woocommerce' ),
 				'type'  => 'title',
-				'id'    => 'ais_security_options',
+				'id'    => 'twoelevenjay_ais_security_options',
 			),
 			array(
 				'title'   => __( 'Allow HTTP', '211j-ai-shopping-for-woocommerce' ),
-				'id'      => 'ais_allow_http',
+				'id'      => 'twoelevenjay_ais_allow_http',
 				'type'    => 'checkbox',
 				'default' => 'yes',
 				'desc'    => __( 'Allow API access over HTTP (for local development).', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'title'   => __( 'Debug Logging', '211j-ai-shopping-for-woocommerce' ),
-				'id'      => 'ais_enable_logging',
+				'id'      => 'twoelevenjay_ais_enable_logging',
 				'type'    => 'checkbox',
 				'default' => 'no',
 				'desc'    => __( 'Log API requests (written to WooCommerce logs).', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'type' => 'sectionend',
-				'id'   => 'ais_security_options',
+				'id'   => 'twoelevenjay_ais_security_options',
 			),
 		);
 	}
@@ -178,53 +178,53 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 				'title' => __( 'Discovery Settings', '211j-ai-shopping-for-woocommerce' ),
 				'type'  => 'title',
 				'desc'  => __( 'Control which AI discovery mechanisms are active on your store.', '211j-ai-shopping-for-woocommerce' ),
-				'id'    => 'ais_discovery_options',
+				'id'    => 'twoelevenjay_ais_discovery_options',
 			),
 			array(
 				'title'   => __( 'Master Toggle', '211j-ai-shopping-for-woocommerce' ),
-				'id'      => 'ais_enable_discovery',
+				'id'      => 'twoelevenjay_ais_enable_discovery',
 				'type'    => 'checkbox',
 				'default' => 'yes',
 				'desc'    => __( 'Enable AI discovery layer (controls all mechanisms below)', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'title'   => __( 'Schema.org Enhancement', '211j-ai-shopping-for-woocommerce' ),
-				'id'      => 'ais_enable_schema_enhancement',
+				'id'      => 'twoelevenjay_ais_enable_schema_enhancement',
 				'type'    => 'checkbox',
 				'default' => 'yes',
 				'desc'    => __( 'Enhance product JSON-LD with brand, GTIN, dimensions, reviews, etc.', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'title'   => __( 'Agent Card', '211j-ai-shopping-for-woocommerce' ),
-				'id'      => 'ais_enable_agent_json',
+				'id'      => 'twoelevenjay_ais_enable_agent_json',
 				'type'    => 'checkbox',
 				'default' => 'yes',
 				'desc'    => __( 'Serve A2A Agent Card at /.well-known/agent.json', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'title'   => __( 'LLMs.txt', '211j-ai-shopping-for-woocommerce' ),
-				'id'      => 'ais_enable_llms_txt',
+				'id'      => 'twoelevenjay_ais_enable_llms_txt',
 				'type'    => 'checkbox',
 				'default' => 'yes',
 				'desc'    => __( 'Serve store overview at /llms.txt', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'title'   => __( 'Product Feed', '211j-ai-shopping-for-woocommerce' ),
-				'id'      => 'ais_enable_product_feed',
+				'id'      => 'twoelevenjay_ais_enable_product_feed',
 				'type'    => 'checkbox',
 				'default' => 'yes',
 				'desc'    => __( 'Serve full product catalog at /ai-shopping-feed.json', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'title'   => __( 'Markdown Negotiation', '211j-ai-shopping-for-woocommerce' ),
-				'id'      => 'ais_enable_markdown_negotiation',
+				'id'      => 'twoelevenjay_ais_enable_markdown_negotiation',
 				'type'    => 'checkbox',
 				'default' => 'yes',
 				'desc'    => __( 'Serve markdown product data when Accept: text/markdown header is present', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'type' => 'sectionend',
-				'id'   => 'ais_discovery_options',
+				'id'   => 'twoelevenjay_ais_discovery_options',
 			),
 		);
 	}
@@ -308,7 +308,7 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 	 * Render the Endpoints section.
 	 */
 	private function render_endpoints_output() {
-		$base = rest_url( 'ai-shopping/v1' );
+		$base = rest_url( 'twoelevenjay-ais/v1' );
 		?>
 		<h2><?php esc_html_e( 'API Endpoints Reference', '211j-ai-shopping-for-woocommerce' ); ?></h2>
 		<p>
@@ -374,7 +374,7 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 	 * Render the Discovery status dashboard (appended below WC fields).
 	 */
 	private function render_discovery_status() {
-		$master_enabled = 'yes' === get_option( 'ais_enable_discovery', 'yes' );
+		$master_enabled = 'yes' === get_option( 'twoelevenjay_ais_enable_discovery', 'yes' );
 
 		// Show cache cleared notice.
 		if ( isset( $_GET['cache_cleared'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
@@ -386,31 +386,31 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 		$mechanisms = array(
 			array(
 				'name'   => __( 'Schema.org Enhancement', '211j-ai-shopping-for-woocommerce' ),
-				'option' => 'ais_enable_schema_enhancement',
+				'option' => 'twoelevenjay_ais_enable_schema_enhancement',
 				'test'   => null,
 				'desc'   => __( 'Enhanced JSON-LD on product pages', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'name'   => __( 'Agent Card', '211j-ai-shopping-for-woocommerce' ),
-				'option' => 'ais_enable_agent_json',
+				'option' => 'twoelevenjay_ais_enable_agent_json',
 				'test'   => home_url( '/.well-known/agent.json' ),
 				'desc'   => __( 'A2A discovery at /.well-known/agent.json', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'name'   => __( 'LLMs.txt', '211j-ai-shopping-for-woocommerce' ),
-				'option' => 'ais_enable_llms_txt',
+				'option' => 'twoelevenjay_ais_enable_llms_txt',
 				'test'   => home_url( '/llms.txt' ),
 				'desc'   => __( 'Plain text store overview at /llms.txt', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'name'   => __( 'Product Feed', '211j-ai-shopping-for-woocommerce' ),
-				'option' => 'ais_enable_product_feed',
+				'option' => 'twoelevenjay_ais_enable_product_feed',
 				'test'   => home_url( '/ai-shopping-feed.json' ),
 				'desc'   => __( 'Full product catalog at /ai-shopping-feed.json', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'name'   => __( 'Markdown Negotiation', '211j-ai-shopping-for-woocommerce' ),
-				'option' => 'ais_enable_markdown_negotiation',
+				'option' => 'twoelevenjay_ais_enable_markdown_negotiation',
 				'test'   => null,
 				'desc'   => __( 'Serves markdown on product pages when Accept: text/markdown', '211j-ai-shopping-for-woocommerce' ),
 			),
@@ -489,8 +489,8 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 		<h2><?php esc_html_e( 'Product Feed Cache', '211j-ai-shopping-for-woocommerce' ); ?></h2>
 		<p><?php esc_html_e( 'The product feed is cached for 1 hour and automatically refreshed when products are added, updated, or deleted.', '211j-ai-shopping-for-woocommerce' ); ?></p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<?php wp_nonce_field( 'ais_clear_feed_cache' ); ?>
-			<input type="hidden" name="action" value="ais_clear_feed_cache" />
+			<?php wp_nonce_field( 'twoelevenjay_ais_clear_feed_cache' ); ?>
+			<input type="hidden" name="action" value="twoelevenjay_ais_clear_feed_cache" />
 			<?php submit_button( __( 'Clear Feed Cache Now', '211j-ai-shopping-for-woocommerce' ), 'secondary' ); ?>
 		</form>
 		<?php

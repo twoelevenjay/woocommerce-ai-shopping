@@ -2,10 +2,10 @@
 /**
  * Account REST API endpoint.
  *
- * @package AIShopping\Api
+ * @package TwoElevenJay\AIShopping\Api
  */
 
-namespace AIShopping\Api;
+namespace TwoElevenJay\AIShopping\Api;
 
 defined( 'ABSPATH' ) || exit;
 

@@ -8,14 +8,14 @@
  * - Empty params use {"type": "object", "additionalProperties": false}.
  * - Tool execution returns `structuredContent` alongside `content` for backwards compat.
  *
- * @package AIShopping\Protocols
+ * @package TwoElevenJay\AIShopping\Protocols
  */
 
-namespace AIShopping\Protocols;
+namespace TwoElevenJay\AIShopping\Protocols;
 
 defined( 'ABSPATH' ) || exit;
 
-use AIShopping\Api\REST_Controller;
+use TwoElevenJay\AIShopping\Api\REST_Controller;
 
 /**
  * Registers MCP tools and serves the MCP tool manifest.
@@ -331,7 +331,7 @@ class MCP_Adapter extends REST_Controller {
 		foreach ( $params as $key => $value ) {
 			$request->set_param( $key, $value );
 		}
-		$api      = new \AIShopping\Api\Products();
+		$api      = new \TwoElevenJay\AIShopping\Api\Products();
 		$response = $api->list_products( $request );
 		return $response->get_data()['data'] ?? $response->get_data();
 	}
@@ -345,7 +345,7 @@ class MCP_Adapter extends REST_Controller {
 	public function tool_get_product( $params ) {
 		$request = new \WP_REST_Request( 'GET' );
 		$request['id'] = (int) ( $params['product_id'] ?? 0 );
-		$api      = new \AIShopping\Api\Products();
+		$api      = new \TwoElevenJay\AIShopping\Api\Products();
 		$response = $api->get_product( $request );
 		return $response->get_data()['data'] ?? $response->get_data();
 	}
@@ -361,7 +361,7 @@ class MCP_Adapter extends REST_Controller {
 		if ( isset( $params['hide_empty'] ) ) {
 			$request->set_param( 'hide_empty', $params['hide_empty'] ? 'true' : 'false' );
 		}
-		$api      = new \AIShopping\Api\Products();
+		$api      = new \TwoElevenJay\AIShopping\Api\Products();
 		$response = $api->list_categories( $request );
 		return $response->get_data()['data'] ?? $response->get_data();
 	}
@@ -375,7 +375,7 @@ class MCP_Adapter extends REST_Controller {
 	public function tool_get_variations( $params ) {
 		$request = new \WP_REST_Request( 'GET' );
 		$request['id'] = (int) ( $params['product_id'] ?? 0 );
-		$api      = new \AIShopping\Api\Products();
+		$api      = new \TwoElevenJay\AIShopping\Api\Products();
 		$response = $api->get_variations( $request );
 		return $response->get_data()['data'] ?? $response->get_data();
 	}
@@ -388,8 +388,8 @@ class MCP_Adapter extends REST_Controller {
 	 * @return array
 	 */
 	public function tool_create_cart( $params, $request = null ) {
-		$key_row = $request ? $request->get_param( '_ais_key' ) : null;
-		$token   = \AIShopping\Cart\Cart_Session::create( $key_row ? $key_row['id'] : 0 );
+		$key_row = $request ? $request->get_param( '_twoelevenjay_ais_key' ) : null;
+		$token   = \TwoElevenJay\AIShopping\Cart\Cart_Session::create( $key_row ? $key_row['id'] : 0 );
 		return array( 'cart_token' => $token );
 	}
 
@@ -401,7 +401,7 @@ class MCP_Adapter extends REST_Controller {
 	 */
 	public function tool_add_to_cart( $params ) {
 		$token   = $params['cart_token'] ?? '';
-		$session = \AIShopping\Cart\Cart_Session::load( $token );
+		$session = \TwoElevenJay\AIShopping\Cart\Cart_Session::load( $token );
 		if ( ! $session ) {
 			return array( 'error' => 'Cart not found' );
 		}
@@ -420,8 +420,8 @@ class MCP_Adapter extends REST_Controller {
 			'quantity'     => $quantity,
 		);
 
-		\AIShopping\Cart\Cart_Session::save( $token, $cart_data );
-		return \AIShopping\Cart\Cart_Session::calculate_totals( $cart_data, $session['customer_data'] );
+		\TwoElevenJay\AIShopping\Cart\Cart_Session::save( $token, $cart_data );
+		return \TwoElevenJay\AIShopping\Cart\Cart_Session::calculate_totals( $cart_data, $session['customer_data'] );
 	}
 
 	/**
@@ -431,11 +431,11 @@ class MCP_Adapter extends REST_Controller {
 	 * @return array
 	 */
 	public function tool_get_cart( $params ) {
-		$session = \AIShopping\Cart\Cart_Session::load( $params['cart_token'] ?? '' );
+		$session = \TwoElevenJay\AIShopping\Cart\Cart_Session::load( $params['cart_token'] ?? '' );
 		if ( ! $session ) {
 			return array( 'error' => 'Cart not found' );
 		}
-		return \AIShopping\Cart\Cart_Session::calculate_totals( $session['cart_data'], $session['customer_data'] );
+		return \TwoElevenJay\AIShopping\Cart\Cart_Session::calculate_totals( $session['cart_data'], $session['customer_data'] );
 	}
 
 	/**
@@ -446,7 +446,7 @@ class MCP_Adapter extends REST_Controller {
 	 */
 	public function tool_get_store_info( $params ) {
 		$request  = new \WP_REST_Request( 'GET' );
-		$api      = new \AIShopping\Api\Store();
+		$api      = new \TwoElevenJay\AIShopping\Api\Store();
 		$response = $api->get_store_info( $request );
 		return $response->get_data()['data'] ?? $response->get_data();
 	}
@@ -460,7 +460,7 @@ class MCP_Adapter extends REST_Controller {
 	public function tool_get_shipping_methods( $params ) {
 		$request = new \WP_REST_Request( 'GET' );
 		$request->set_header( 'X-Cart-Token', $params['cart_token'] ?? '' );
-		$api      = new \AIShopping\Api\Checkout();
+		$api      = new \TwoElevenJay\AIShopping\Api\Checkout();
 		$response = $api->get_shipping_methods( $request );
 		return $response->get_data()['data'] ?? $response->get_data();
 	}
@@ -473,7 +473,7 @@ class MCP_Adapter extends REST_Controller {
 	 */
 	public function tool_get_payment_gateways( $params ) {
 		$request  = new \WP_REST_Request( 'GET' );
-		$api      = new \AIShopping\Api\Checkout();
+		$api      = new \TwoElevenJay\AIShopping\Api\Checkout();
 		$response = $api->get_payment_methods( $request );
 		return $response->get_data()['data'] ?? $response->get_data();
 	}
@@ -486,7 +486,7 @@ class MCP_Adapter extends REST_Controller {
 	 */
 	public function tool_place_order( $params ) {
 		$token   = $params['cart_token'] ?? '';
-		$session = \AIShopping\Cart\Cart_Session::load( $token );
+		$session = \TwoElevenJay\AIShopping\Cart\Cart_Session::load( $token );
 		if ( ! $session ) {
 			return array( 'error' => 'Cart not found' );
 		}
@@ -503,10 +503,10 @@ class MCP_Adapter extends REST_Controller {
 			$customer['payment_method'] = sanitize_text_field( $params['payment_method'] );
 		}
 
-		\AIShopping\Cart\Cart_Session::save_customer_data( $token, $customer );
+		\TwoElevenJay\AIShopping\Cart\Cart_Session::save_customer_data( $token, $customer );
 
 		// Create order.
-		$calculated = \AIShopping\Cart\Cart_Session::calculate_totals( $session['cart_data'], $customer );
+		$calculated = \TwoElevenJay\AIShopping\Cart\Cart_Session::calculate_totals( $session['cart_data'], $customer );
 		$order      = wc_create_order();
 
 		foreach ( $calculated['items'] as $item ) {
@@ -531,7 +531,7 @@ class MCP_Adapter extends REST_Controller {
 		$order->add_order_note( __( 'Order placed via MCP (Model Context Protocol).', '211j-ai-shopping-for-woocommerce' ) );
 		$order->save();
 
-		\AIShopping\Cart\Cart_Session::delete( $token );
+		\TwoElevenJay\AIShopping\Cart\Cart_Session::delete( $token );
 
 		return array(
 			'order_id' => $order->get_id(),
@@ -549,7 +549,7 @@ class MCP_Adapter extends REST_Controller {
 	public function tool_get_order( $params ) {
 		$request = new \WP_REST_Request( 'GET' );
 		$request['id'] = (int) ( $params['order_id'] ?? 0 );
-		$api      = new \AIShopping\Api\Orders();
+		$api      = new \TwoElevenJay\AIShopping\Api\Orders();
 		$response = $api->get_order( $request );
 		return $response->get_data()['data'] ?? $response->get_data();
 	}

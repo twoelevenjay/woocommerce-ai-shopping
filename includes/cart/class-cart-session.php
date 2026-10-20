@@ -2,10 +2,10 @@
 /**
  * Headless cart session management.
  *
- * @package AIShopping\Cart
+ * @package TwoElevenJay\AIShopping\Cart
  */
 
-namespace AIShopping\Cart;
+namespace TwoElevenJay\AIShopping\Cart;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Cart_Session {
 
-	const TABLE = 'ais_cart_sessions';
+	const TABLE = 'twoelevenjay_ais_cart_sessions';
 
 	/**
 	 * Default cart TTL: 24 hours.

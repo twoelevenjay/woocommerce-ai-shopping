@@ -11,15 +11,15 @@
  * - Buyer object, fulfillment_details, items.id mapping.
  * - Extension and discount support.
  *
- * @package AIShopping\Protocols
+ * @package TwoElevenJay\AIShopping\Protocols
  */
 
-namespace AIShopping\Protocols;
+namespace TwoElevenJay\AIShopping\Protocols;
 
 defined( 'ABSPATH' ) || exit;
 
-use AIShopping\Api\REST_Controller;
-use AIShopping\Cart\Cart_Session;
+use TwoElevenJay\AIShopping\Api\REST_Controller;
+use TwoElevenJay\AIShopping\Cart\Cart_Session;
 
 /**
  * Maps ACP's checkout model to the internal API.
@@ -165,7 +165,7 @@ class ACP_Adapter extends REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function search_products( $request ) {
-		$products_api = new \AIShopping\Api\Products();
+		$products_api = new \TwoElevenJay\AIShopping\Api\Products();
 		$response     = $products_api->list_products( $request );
 		return $response;
 	}
@@ -179,7 +179,7 @@ class ACP_Adapter extends REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function create_checkout( $request ) {
-		$key_row = $request->get_param( '_ais_key' );
+		$key_row = $request->get_param( '_twoelevenjay_ais_key' );
 		$items   = $request->get_param( 'items' );
 
 		if ( empty( $items ) || ! is_array( $items ) ) {

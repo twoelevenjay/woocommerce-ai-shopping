@@ -5,14 +5,14 @@
  * Read endpoints are open (like a storefront). Write endpoints require
  * user authentication. Rate limiting is per-IP.
  *
- * @package AIShopping\Api
+ * @package TwoElevenJay\AIShopping\Api
  */
 
-namespace AIShopping\Api;
+namespace TwoElevenJay\AIShopping\Api;
 
 defined( 'ABSPATH' ) || exit;
 
-use AIShopping\Security\Rate_Limiter;
+use TwoElevenJay\AIShopping\Security\Rate_Limiter;
 
 /**
  * Abstract base for all AI Shopping REST controllers.
@@ -24,7 +24,7 @@ abstract class REST_Controller {
 	 *
 	 * @var string
 	 */
-	protected $namespace = 'ai-shopping/v1';
+	protected $namespace = 'twoelevenjay-ais/v1';
 
 	/**
 	 * Register routes (implemented by each controller).
@@ -60,7 +60,7 @@ abstract class REST_Controller {
 	 */
 	protected function check_permission( $request, $operation = 'read' ) {
 		// Allow HTTP in local dev if configured.
-		if ( 'yes' !== get_option( 'ais_allow_http', 'yes' ) && ! is_ssl() ) {
+		if ( 'yes' !== get_option( 'twoelevenjay_ais_allow_http', 'yes' ) && ! is_ssl() ) {
 			return $this->error( 'https_required', __( 'HTTPS is required for API access.', '211j-ai-shopping-for-woocommerce' ), 403 );
 		}
 
@@ -89,7 +89,7 @@ abstract class REST_Controller {
 		}
 
 		// Store rate info on request for downstream use.
-		$request->set_param( '_ais_rate', $rate );
+		$request->set_param( '_twoelevenjay_ais_rate', $rate );
 
 		return true;
 	}
@@ -163,7 +163,7 @@ abstract class REST_Controller {
 	protected function get_meta( $protocol = 'rest' ) {
 		return array(
 			'protocol'  => $protocol,
-			'version'   => AIS_VERSION,
+			'version'   => TWOELEVENJAY_AIS_VERSION,
 			'store'     => get_bloginfo( 'name' ),
 			'currency'  => function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : 'USD',
 			'timestamp' => gmdate( 'c' ),
@@ -181,7 +181,7 @@ abstract class REST_Controller {
 			return;
 		}
 
-		$rate = $request->get_param( '_ais_rate' );
+		$rate = $request->get_param( '_twoelevenjay_ais_rate' );
 		if ( $rate && ! empty( $rate['limit'] ) ) {
 			$response->header( 'X-RateLimit-Limit', $rate['limit'] );
 			$response->header( 'X-RateLimit-Remaining', $rate['remaining'] );

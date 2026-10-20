@@ -2,10 +2,10 @@
 /**
  * HMAC signing for webhook events.
  *
- * @package AIShopping\Security
+ * @package TwoElevenJay\AIShopping\Security
  */
 
-namespace AIShopping\Security;
+namespace TwoElevenJay\AIShopping\Security;
 
 defined( 'ABSPATH' ) || exit;
 

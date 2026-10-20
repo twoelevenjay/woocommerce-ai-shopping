@@ -2,10 +2,10 @@
 /**
  * Rate limiter.
  *
- * @package AIShopping\Security
+ * @package TwoElevenJay\AIShopping\Security
  */
 
-namespace AIShopping\Security;
+namespace TwoElevenJay\AIShopping\Security;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Rate_Limiter {
 
-	const TABLE = 'ais_rate_limits';
+	const TABLE = 'twoelevenjay_ais_rate_limits';
 
 	/**
 	 * Create the rate limits table.
@@ -47,7 +47,7 @@ class Rate_Limiter {
 	public static function check( $operation = 'read' ) {
 		$bucket = 'write' === $operation ? 'write' : 'read';
 
-		$default_option = 'write' === $operation ? 'ais_rate_limit_write' : 'ais_rate_limit_read';
+		$default_option = 'write' === $operation ? 'twoelevenjay_ais_rate_limit_write' : 'twoelevenjay_ais_rate_limit_read';
 		$limit          = (int) get_option( $default_option, 'write' === $operation ? 30 : 60 );
 
 		if ( 0 === $limit ) {

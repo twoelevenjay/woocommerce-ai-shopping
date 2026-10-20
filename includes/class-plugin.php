@@ -2,10 +2,10 @@
 /**
  * Core plugin orchestration.
  *
- * @package AIShopping
+ * @package TwoElevenJay\AIShopping
  */
 
-namespace AIShopping;
+namespace TwoElevenJay\AIShopping;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -55,9 +55,9 @@ class Plugin {
 
 		// Scheduled events.
 		add_action( 'init', array( $this, 'schedule_events' ) );
-		add_action( 'ais_daily_extension_scan', array( $this, 'run_extension_scan' ) );
-		add_action( 'ais_cleanup_expired_carts', array( $this, 'cleanup_expired_carts' ) );
-		add_action( 'ais_cleanup_rate_limits', array( $this, 'cleanup_rate_limits' ) );
+		add_action( 'twoelevenjay_ais_daily_extension_scan', array( $this, 'run_extension_scan' ) );
+		add_action( 'twoelevenjay_ais_cleanup_expired_carts', array( $this, 'cleanup_expired_carts' ) );
+		add_action( 'twoelevenjay_ais_cleanup_rate_limits', array( $this, 'cleanup_rate_limits' ) );
 
 		// UCP well-known endpoint.
 		add_action( 'init', array( $this, 'register_wellknown_rewrite' ) );
@@ -94,13 +94,13 @@ class Plugin {
 		( new Api\Account() )->register_routes();
 
 		// Protocol adapters.
-		if ( 'yes' === get_option( 'ais_enable_acp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_acp', 'yes' ) ) {
 			( new Protocols\ACP_Adapter() )->register_routes();
 		}
-		if ( 'yes' === get_option( 'ais_enable_ucp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_ucp', 'yes' ) ) {
 			( new Protocols\UCP_Adapter() )->register_routes();
 		}
-		if ( 'yes' === get_option( 'ais_enable_mcp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_mcp', 'yes' ) ) {
 			( new Protocols\MCP_Adapter() )->register_routes();
 		}
 	}
@@ -109,14 +109,14 @@ class Plugin {
 	 * Schedule recurring events.
 	 */
 	public function schedule_events() {
-		if ( ! wp_next_scheduled( 'ais_daily_extension_scan' ) ) {
-			wp_schedule_event( time(), 'daily', 'ais_daily_extension_scan' );
+		if ( ! wp_next_scheduled( 'twoelevenjay_ais_daily_extension_scan' ) ) {
+			wp_schedule_event( time(), 'daily', 'twoelevenjay_ais_daily_extension_scan' );
 		}
-		if ( ! wp_next_scheduled( 'ais_cleanup_expired_carts' ) ) {
-			wp_schedule_event( time(), 'hourly', 'ais_cleanup_expired_carts' );
+		if ( ! wp_next_scheduled( 'twoelevenjay_ais_cleanup_expired_carts' ) ) {
+			wp_schedule_event( time(), 'hourly', 'twoelevenjay_ais_cleanup_expired_carts' );
 		}
-		if ( ! wp_next_scheduled( 'ais_cleanup_rate_limits' ) ) {
-			wp_schedule_event( time(), 'hourly', 'ais_cleanup_rate_limits' );
+		if ( ! wp_next_scheduled( 'twoelevenjay_ais_cleanup_rate_limits' ) ) {
+			wp_schedule_event( time(), 'hourly', 'twoelevenjay_ais_cleanup_rate_limits' );
 		}
 	}
 
@@ -145,11 +145,11 @@ class Plugin {
 	 * Register rewrite rule for /.well-known/ucp.
 	 */
 	public function register_wellknown_rewrite() {
-		add_rewrite_rule( '^\.well-known/ucp/?$', 'index.php?ais_wellknown_ucp=1', 'top' );
+		add_rewrite_rule( '^\.well-known/ucp/?$', 'index.php?twoelevenjay_ais_wellknown_ucp=1', 'top' );
 		add_filter(
 			'query_vars',
 			function ( $vars ) {
-				$vars[] = 'ais_wellknown_ucp';
+				$vars[] = 'twoelevenjay_ais_wellknown_ucp';
 				return $vars;
 			}
 		);
@@ -159,11 +159,11 @@ class Plugin {
 	 * Handle /.well-known/ucp requests.
 	 */
 	public function handle_wellknown() {
-		if ( ! get_query_var( 'ais_wellknown_ucp' ) ) {
+		if ( ! get_query_var( 'twoelevenjay_ais_wellknown_ucp' ) ) {
 			return;
 		}
 
-		if ( 'yes' !== get_option( 'ais_enable_ucp', 'yes' ) ) {
+		if ( 'yes' !== get_option( 'twoelevenjay_ais_enable_ucp', 'yes' ) ) {
 			status_header( 404 );
 			exit;
 		}

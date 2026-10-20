@@ -2,14 +2,14 @@
 /**
  * Checkout REST API endpoint.
  *
- * @package AIShopping\Api
+ * @package TwoElevenJay\AIShopping\Api
  */
 
-namespace AIShopping\Api;
+namespace TwoElevenJay\AIShopping\Api;
 
 defined( 'ABSPATH' ) || exit;
 
-use AIShopping\Cart\Cart_Session;
+use TwoElevenJay\AIShopping\Cart\Cart_Session;
 
 /**
  * Checkout flow: addresses, shipping methods, payment, order placement.

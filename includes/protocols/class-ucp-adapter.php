@@ -11,16 +11,16 @@
  * - Status values: incomplete, requires_escalation, ready_for_complete,
  *   complete_in_progress, completed, canceled.
  *
- * @package AIShopping\Protocols
+ * @package TwoElevenJay\AIShopping\Protocols
  */
 
-namespace AIShopping\Protocols;
+namespace TwoElevenJay\AIShopping\Protocols;
 
 defined( 'ABSPATH' ) || exit;
 
-use AIShopping\Api\REST_Controller;
-use AIShopping\Cart\Cart_Session;
-use AIShopping\Extensions\Extension_Detector;
+use TwoElevenJay\AIShopping\Api\REST_Controller;
+use TwoElevenJay\AIShopping\Cart\Cart_Session;
+use TwoElevenJay\AIShopping\Extensions\Extension_Detector;
 
 /**
  * UCP implementation: merchant profile, capability negotiation, shopping service.
@@ -334,7 +334,7 @@ class UCP_Adapter extends REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function catalog_search( $request ) {
-		$products_api = new \AIShopping\Api\Products();
+		$products_api = new \TwoElevenJay\AIShopping\Api\Products();
 		return $products_api->list_products( $request );
 	}
 
@@ -345,7 +345,7 @@ class UCP_Adapter extends REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function catalog_product( $request ) {
-		$products_api = new \AIShopping\Api\Products();
+		$products_api = new \TwoElevenJay\AIShopping\Api\Products();
 		return $products_api->get_product( $request );
 	}
 
@@ -356,7 +356,7 @@ class UCP_Adapter extends REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function catalog_categories( $request ) {
-		$products_api = new \AIShopping\Api\Products();
+		$products_api = new \TwoElevenJay\AIShopping\Api\Products();
 		return $products_api->list_categories( $request );
 	}
 
@@ -367,7 +367,7 @@ class UCP_Adapter extends REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function create_session( $request ) {
-		$key_row = $request->get_param( '_ais_key' );
+		$key_row = $request->get_param( '_twoelevenjay_ais_key' );
 		$token   = Cart_Session::create( $key_row ? $key_row['id'] : 0 );
 
 		$items = $request->get_param( 'line_items' ) ?: array();
@@ -654,7 +654,7 @@ class UCP_Adapter extends REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function get_order( $request ) {
-		$orders_api = new \AIShopping\Api\Orders();
+		$orders_api = new \TwoElevenJay\AIShopping\Api\Orders();
 		return $orders_api->get_order( $request );
 	}
 

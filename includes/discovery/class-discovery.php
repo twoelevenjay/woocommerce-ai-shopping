@@ -6,10 +6,10 @@
  * rewrite rules, content negotiation, head tags, HTTP headers, robots.txt,
  * and dynamic endpoints (agent.json, llms.txt, product feed).
  *
- * @package AIShopping\Discovery
+ * @package TwoElevenJay\AIShopping\Discovery
  */
 
-namespace AIShopping\Discovery;
+namespace TwoElevenJay\AIShopping\Discovery;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -22,12 +22,12 @@ class Discovery {
 	 * Constructor — wire up all discovery hooks.
 	 */
 	public function __construct() {
-		if ( 'yes' !== get_option( 'ais_enable_discovery', 'yes' ) ) {
+		if ( 'yes' !== get_option( 'twoelevenjay_ais_enable_discovery', 'yes' ) ) {
 			return;
 		}
 
 		// Schema.org enhancement.
-		if ( 'yes' === get_option( 'ais_enable_schema_enhancement', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_schema_enhancement', 'yes' ) ) {
 			new Schema_Enhancer();
 		}
 
@@ -61,24 +61,24 @@ class Discovery {
 	 */
 	public function register_rewrite_rules() {
 		// Flush once per plugin version so updates pick up the rules without reactivation.
-		if ( AIS_VERSION !== get_option( 'ais_rewrite_version' ) ) {
-			update_option( 'ais_rewrite_version', AIS_VERSION );
+		if ( TWOELEVENJAY_AIS_VERSION !== get_option( 'twoelevenjay_ais_rewrite_version' ) ) {
+			update_option( 'twoelevenjay_ais_rewrite_version', TWOELEVENJAY_AIS_VERSION );
 			add_action( 'wp_loaded', 'flush_rewrite_rules' );
 		}
 
 		// /.well-known/agent.json
-		add_rewrite_rule( '^\.well-known/agent\.json/?$', 'index.php?ais_discovery_endpoint=agent_json', 'top' );
+		add_rewrite_rule( '^\.well-known/agent\.json/?$', 'index.php?twoelevenjay_ais_discovery_endpoint=agent_json', 'top' );
 
 		// /llms.txt
-		add_rewrite_rule( '^llms\.txt/?$', 'index.php?ais_discovery_endpoint=llms_txt', 'top' );
+		add_rewrite_rule( '^llms\.txt/?$', 'index.php?twoelevenjay_ais_discovery_endpoint=llms_txt', 'top' );
 
 		// /ai-shopping-feed.json
-		add_rewrite_rule( '^ai-shopping-feed\.json/?$', 'index.php?ais_discovery_endpoint=product_feed', 'top' );
+		add_rewrite_rule( '^ai-shopping-feed\.json/?$', 'index.php?twoelevenjay_ais_discovery_endpoint=product_feed', 'top' );
 
 		add_filter(
 			'query_vars',
 			function ( $vars ) {
-				$vars[] = 'ais_discovery_endpoint';
+				$vars[] = 'twoelevenjay_ais_discovery_endpoint';
 				return $vars;
 			}
 		);
@@ -88,7 +88,7 @@ class Discovery {
 	 * Handle Accept: text/markdown content negotiation on product pages.
 	 */
 	public function handle_content_negotiation() {
-		if ( 'yes' !== get_option( 'ais_enable_markdown_negotiation', 'yes' ) ) {
+		if ( 'yes' !== get_option( 'twoelevenjay_ais_enable_markdown_negotiation', 'yes' ) ) {
 			return;
 		}
 
@@ -143,7 +143,7 @@ class Discovery {
 	 * Handle discovery endpoint requests.
 	 */
 	public function handle_discovery_endpoints() {
-		$endpoint = get_query_var( 'ais_discovery_endpoint' );
+		$endpoint = get_query_var( 'twoelevenjay_ais_discovery_endpoint' );
 		if ( ! $endpoint ) {
 			// Fallback when the rewrite rules were never flushed (for example after
 			// an update without reactivation): match the request path directly.
@@ -172,16 +172,16 @@ class Discovery {
 	 */
 	public function render_head_tags() {
 		$agent_url = home_url( '/.well-known/agent.json' );
-		$rest_url  = rest_url( 'ai-shopping/v1' );
+		$rest_url  = rest_url( 'twoelevenjay-ais/v1' );
 
 		$protocols = array();
-		if ( 'yes' === get_option( 'ais_enable_acp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_acp', 'yes' ) ) {
 			$protocols[] = 'acp';
 		}
-		if ( 'yes' === get_option( 'ais_enable_ucp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_ucp', 'yes' ) ) {
 			$protocols[] = 'ucp';
 		}
-		if ( 'yes' === get_option( 'ais_enable_mcp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_mcp', 'yes' ) ) {
 			$protocols[] = 'mcp';
 		}
 
@@ -201,17 +201,17 @@ class Discovery {
 		}
 
 		$protocols = array();
-		if ( 'yes' === get_option( 'ais_enable_acp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_acp', 'yes' ) ) {
 			$protocols[] = 'acp';
 		}
-		if ( 'yes' === get_option( 'ais_enable_ucp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_ucp', 'yes' ) ) {
 			$protocols[] = 'ucp';
 		}
-		if ( 'yes' === get_option( 'ais_enable_mcp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_mcp', 'yes' ) ) {
 			$protocols[] = 'mcp';
 		}
 
-		header( 'X-AI-Shopping: v' . AIS_VERSION . '; protocols=' . implode( ',', $protocols ) );
+		header( 'X-AI-Shopping: v' . TWOELEVENJAY_AIS_VERSION . '; protocols=' . implode( ',', $protocols ) );
 		header( 'Link: <' . home_url( '/.well-known/agent.json' ) . '>; rel="ai-commerce"', false );
 	}
 
@@ -240,19 +240,19 @@ class Discovery {
 	 * Invalidate the product feed transient cache.
 	 */
 	public function invalidate_product_feed_cache() {
-		delete_transient( 'ais_product_feed' );
+		delete_transient( 'twoelevenjay_ais_product_feed' );
 	}
 
 	/**
 	 * Serve /.well-known/agent.json (A2A Agent Card).
 	 */
 	private function serve_agent_json() {
-		if ( 'yes' !== get_option( 'ais_enable_agent_json', 'yes' ) ) {
+		if ( 'yes' !== get_option( 'twoelevenjay_ais_enable_agent_json', 'yes' ) ) {
 			status_header( 404 );
 			exit;
 		}
 
-		$rest_base = rest_url( 'ai-shopping/v1' );
+		$rest_base = rest_url( 'twoelevenjay-ais/v1' );
 
 		$skills = array(
 			array(
@@ -290,19 +290,19 @@ class Discovery {
 		);
 
 		$protocols = array();
-		if ( 'yes' === get_option( 'ais_enable_acp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_acp', 'yes' ) ) {
 			$protocols['acp'] = array(
 				'enabled'  => true,
 				'base_url' => $rest_base . '/acp',
 			);
 		}
-		if ( 'yes' === get_option( 'ais_enable_ucp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_ucp', 'yes' ) ) {
 			$protocols['ucp'] = array(
 				'enabled'    => true,
 				'well_known' => '/.well-known/ucp',
 			);
 		}
-		if ( 'yes' === get_option( 'ais_enable_mcp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_mcp', 'yes' ) ) {
 			$protocols['mcp'] = array(
 				'enabled'  => true,
 				'base_url' => $rest_base . '/mcp',
@@ -313,7 +313,7 @@ class Discovery {
 			'name'           => get_bloginfo( 'name' ),
 			'description'    => get_bloginfo( 'description' ),
 			'url'            => home_url(),
-			'version'        => AIS_VERSION,
+			'version'        => TWOELEVENJAY_AIS_VERSION,
 			'capabilities'   => array(
 				'streaming' => false,
 			),
@@ -341,7 +341,7 @@ class Discovery {
 		 *
 		 * @param array $card Agent card data.
 		 */
-		$card = apply_filters( 'ai_shopping_agent_card', $card );
+		$card = apply_filters( 'twoelevenjay_ais_agent_card', $card );
 
 		status_header( 200 );
 		header( 'Content-Type: application/json; charset=utf-8' );
@@ -355,14 +355,14 @@ class Discovery {
 	 * Serve /llms.txt — plain text store overview for LLMs.
 	 */
 	private function serve_llms_txt() {
-		if ( 'yes' !== get_option( 'ais_enable_llms_txt', 'yes' ) ) {
+		if ( 'yes' !== get_option( 'twoelevenjay_ais_enable_llms_txt', 'yes' ) ) {
 			status_header( 404 );
 			exit;
 		}
 
 		$name        = get_bloginfo( 'name' );
 		$description = get_bloginfo( 'description' );
-		$rest_base   = rest_url( 'ai-shopping/v1' );
+		$rest_base   = rest_url( 'twoelevenjay-ais/v1' );
 		$currency    = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : 'USD';
 
 		$output  = "# {$name}\n";
@@ -406,13 +406,13 @@ class Discovery {
 
 		// Protocols.
 		$output .= "### Protocols\n";
-		if ( 'yes' === get_option( 'ais_enable_acp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_acp', 'yes' ) ) {
 			$output .= "- ACP (Agentic Commerce Protocol): {$rest_base}/acp/\n";
 		}
-		if ( 'yes' === get_option( 'ais_enable_ucp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_ucp', 'yes' ) ) {
 			$output .= "- UCP (Universal Commerce Protocol): " . home_url( '/.well-known/ucp' ) . "\n";
 		}
-		if ( 'yes' === get_option( 'ais_enable_mcp', 'yes' ) ) {
+		if ( 'yes' === get_option( 'twoelevenjay_ais_enable_mcp', 'yes' ) ) {
 			$output .= "- MCP (Model Context Protocol): {$rest_base}/mcp/tools\n";
 		}
 
@@ -429,7 +429,7 @@ class Discovery {
 		 *
 		 * @param string $output The llms.txt content.
 		 */
-		$output = apply_filters( 'ai_shopping_llms_txt', $output );
+		$output = apply_filters( 'twoelevenjay_ais_llms_txt', $output );
 
 		status_header( 200 );
 		header( 'Content-Type: text/plain; charset=utf-8' );
@@ -443,7 +443,7 @@ class Discovery {
 	 * Serve /ai-shopping-feed.json — full product catalog.
 	 */
 	private function serve_product_feed() {
-		if ( 'yes' !== get_option( 'ais_enable_product_feed', 'yes' ) ) {
+		if ( 'yes' !== get_option( 'twoelevenjay_ais_enable_product_feed', 'yes' ) ) {
 			status_header( 404 );
 			exit;
 		}
@@ -549,7 +549,7 @@ class Discovery {
 
 		// API info.
 		$md .= "\n---\n";
-		$md .= "**API:** " . rest_url( 'ai-shopping/v1/products/' . $product->get_id() ) . "\n";
+		$md .= "**API:** " . rest_url( 'twoelevenjay-ais/v1/products/' . $product->get_id() ) . "\n";
 		$md .= "**Agent Card:** " . home_url( '/.well-known/agent.json' ) . "\n";
 
 		status_header( 200 );
@@ -604,7 +604,7 @@ class Discovery {
 
 		$md .= "---\n";
 		$md .= "**Full catalog feed:** " . home_url( '/ai-shopping-feed.json' ) . "\n";
-		$md .= "**API:** " . rest_url( 'ai-shopping/v1/products' ) . "\n";
+		$md .= "**API:** " . rest_url( 'twoelevenjay-ais/v1/products' ) . "\n";
 
 		status_header( 200 );
 		header( 'Content-Type: text/markdown; charset=utf-8' );

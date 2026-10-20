@@ -5,10 +5,10 @@
  * Hooks into WooCommerce's structured data to add richer product metadata
  * that AI agents and search engines can parse.
  *
- * @package AIShopping\Discovery
+ * @package TwoElevenJay\AIShopping\Discovery
  */
 
-namespace AIShopping\Discovery;
+namespace TwoElevenJay\AIShopping\Discovery;
 
 defined( 'ABSPATH' ) || exit;
 

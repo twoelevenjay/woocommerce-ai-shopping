@@ -2,14 +2,14 @@
 /**
  * Store info REST API endpoint.
  *
- * @package AIShopping\Api
+ * @package TwoElevenJay\AIShopping\Api
  */
 
-namespace AIShopping\Api;
+namespace TwoElevenJay\AIShopping\Api;
 
 defined( 'ABSPATH' ) || exit;
 
-use AIShopping\Extensions\Extension_Detector;
+use TwoElevenJay\AIShopping\Extensions\Extension_Detector;
 
 /**
  * Read-only store configuration: name, currency, shipping zones, payment gateways, tax rates.
@@ -101,9 +101,9 @@ class Store extends REST_Controller {
 			'prices_include_tax' => 'yes' === get_option( 'woocommerce_prices_include_tax' ),
 			'product_types'      => array_keys( wc_get_product_types() ),
 			'protocols'          => array(
-				'acp' => 'yes' === get_option( 'ais_enable_acp', 'yes' ),
-				'ucp' => 'yes' === get_option( 'ais_enable_ucp', 'yes' ),
-				'mcp' => 'yes' === get_option( 'ais_enable_mcp', 'yes' ),
+				'acp' => 'yes' === get_option( 'twoelevenjay_ais_enable_acp', 'yes' ),
+				'ucp' => 'yes' === get_option( 'twoelevenjay_ais_enable_ucp', 'yes' ),
+				'mcp' => 'yes' === get_option( 'twoelevenjay_ais_enable_mcp', 'yes' ),
 			),
 			'extensions'         => Extension_Detector::get_active_extensions(),
 			'capabilities'       => $this->get_capabilities(),
