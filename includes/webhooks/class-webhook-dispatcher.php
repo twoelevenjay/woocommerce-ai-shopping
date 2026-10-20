@@ -61,7 +61,7 @@ class Webhook_Dispatcher {
 
 		$json = wp_json_encode( $payload );
 
-		// Get webhook secret from the first active API key (or global).
+		// Webhook secret from settings.
 		$webhook_secret = get_option( 'twoelevenjay_ais_webhook_secret', '' );
 		$signature      = '';
 		if ( $webhook_secret ) {
@@ -80,6 +80,6 @@ class Webhook_Dispatcher {
 			'sslverify' => true,
 		);
 
-		wp_remote_post( $webhook_url, $args );
+		wp_safe_remote_post( $webhook_url, $args );
 	}
 }

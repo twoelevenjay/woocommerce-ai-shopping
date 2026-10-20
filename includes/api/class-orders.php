@@ -26,7 +26,7 @@ class Orders extends REST_Controller {
 			array(
 				'methods'             => 'GET',
 				'callback'            => array( $this, 'get_order' ),
-				'permission_callback' => array( $this, 'check_read_permission' ),
+				'permission_callback' => array( $this, 'check_order_permission' ),
 			)
 		);
 
@@ -36,7 +36,7 @@ class Orders extends REST_Controller {
 			array(
 				'methods'             => 'GET',
 				'callback'            => array( $this, 'get_tracking' ),
-				'permission_callback' => array( $this, 'check_read_permission' ),
+				'permission_callback' => array( $this, 'check_order_permission' ),
 			)
 		);
 
@@ -46,9 +46,58 @@ class Orders extends REST_Controller {
 			array(
 				'methods'             => 'POST',
 				'callback'            => array( $this, 'add_note' ),
-				'permission_callback' => array( $this, 'check_write_permission' ),
+				'permission_callback' => array( $this, 'check_order_permission' ),
 			)
 		);
+	}
+
+	/**
+	 * Order meta key recording the user who placed an order through this plugin.
+	 */
+	const CREATED_BY_META = '_twoelevenjay_ais_created_by';
+
+	/**
+	 * Whether the current visitor may read an order.
+	 *
+	 * True with the matching order key, for the order's customer, for the
+	 * user who placed it through this plugin, and for shop managers.
+	 *
+	 * @param \WC_Order $order     The order.
+	 * @param string    $order_key Order key supplied by the client, if any.
+	 * @return bool
+	 */
+	public static function current_user_can_view( $order, $order_key = '' ) {
+		if ( ! $order instanceof \WC_Order ) {
+			return false;
+		}
+
+		if ( '' !== $order_key && hash_equals( $order->get_order_key(), $order_key ) ) {
+			return true;
+		}
+
+		if ( ! is_user_logged_in() ) {
+			return false;
+		}
+
+		if ( current_user_can( 'manage_woocommerce' ) ) {
+			return true;
+		}
+
+		$user_id = get_current_user_id();
+		return $user_id === (int) $order->get_customer_id()
+			|| $user_id === (int) $order->get_meta( self::CREATED_BY_META );
+	}
+
+	/**
+	 * Record the current user on an order placed through this plugin.
+	 *
+	 * @param \WC_Order $order The order (saved by the caller).
+	 */
+	public static function record_creator( $order ) {
+		$user_id = get_current_user_id();
+		if ( $user_id ) {
+			$order->update_meta_data( self::CREATED_BY_META, $user_id );
+		}
 	}
 
 	/**

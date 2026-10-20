@@ -241,7 +241,7 @@ class Products extends REST_Controller {
 	public function get_variations( $request ) {
 		$product = wc_get_product( (int) $request['id'] );
 
-		if ( ! $product || ! $product->is_type( 'variable' ) ) {
+		if ( ! $product || ! $product->is_type( 'variable' ) || 'publish' !== $product->get_status() ) {
 			return $this->error_response(
 				'invalid_product',
 				__( 'Product not found or is not a variable product.', '211j-ai-shopping-for-woocommerce' ),
@@ -393,8 +393,9 @@ class Products extends REST_Controller {
 		$pagination = $this->get_pagination( $request );
 
 		$args = array(
-			'post_type' => 'product',
-			'status'    => 'approve',
+			'post_type'   => 'product',
+			'post_status' => 'publish',
+			'status'      => 'approve',
 			'number'    => $pagination['per_page'],
 			'offset'    => ( $pagination['page'] - 1 ) * $pagination['per_page'],
 		);

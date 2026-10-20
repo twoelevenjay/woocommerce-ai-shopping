@@ -26,7 +26,7 @@ class Account extends REST_Controller {
 			array(
 				'methods'             => 'GET',
 				'callback'            => array( $this, 'get_account' ),
-				'permission_callback' => array( $this, 'check_read_permission' ),
+				'permission_callback' => array( $this, 'check_account_permission' ),
 			)
 		);
 
@@ -36,7 +36,7 @@ class Account extends REST_Controller {
 			array(
 				'methods'             => 'GET',
 				'callback'            => array( $this, 'get_orders' ),
-				'permission_callback' => array( $this, 'check_read_permission' ),
+				'permission_callback' => array( $this, 'check_account_permission' ),
 			)
 		);
 
@@ -46,7 +46,7 @@ class Account extends REST_Controller {
 			array(
 				'methods'             => 'GET',
 				'callback'            => array( $this, 'get_addresses' ),
-				'permission_callback' => array( $this, 'check_read_permission' ),
+				'permission_callback' => array( $this, 'check_account_permission' ),
 			)
 		);
 	}
@@ -58,17 +58,7 @@ class Account extends REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function get_account( $request ) {
-		$customer_id = $request->get_param( 'customer_id' );
-		if ( ! $customer_id ) {
-			return $this->error_response(
-				'missing_customer_id',
-				__( 'Provide a customer_id parameter to retrieve account info.', '211j-ai-shopping-for-woocommerce' ),
-				400,
-				$request
-			);
-		}
-
-		$customer = new \WC_Customer( (int) $customer_id );
+		$customer = new \WC_Customer( $this->get_customer_id( $request ) );
 		if ( ! $customer->get_id() ) {
 			return $this->error_response( 'customer_not_found', __( 'Customer not found.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
@@ -95,10 +85,7 @@ class Account extends REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function get_orders( $request ) {
-		$customer_id = (int) $request->get_param( 'customer_id' );
-		if ( ! $customer_id ) {
-			return $this->error_response( 'missing_customer_id', __( 'Provide a customer_id parameter.', '211j-ai-shopping-for-woocommerce' ), 400, $request );
-		}
+		$customer_id = $this->get_customer_id( $request );
 
 		$pagination = $this->get_pagination( $request );
 
@@ -134,10 +121,7 @@ class Account extends REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function get_addresses( $request ) {
-		$customer_id = (int) $request->get_param( 'customer_id' );
-		if ( ! $customer_id ) {
-			return $this->error_response( 'missing_customer_id', __( 'Provide a customer_id parameter.', '211j-ai-shopping-for-woocommerce' ), 400, $request );
-		}
+		$customer_id = $this->get_customer_id( $request );
 
 		$customer = new \WC_Customer( $customer_id );
 		if ( ! $customer->get_id() ) {
@@ -173,5 +157,19 @@ class Account extends REST_Controller {
 			),
 			$request
 		);
+	}
+
+	/**
+	 * Resolve the customer for this request.
+	 *
+	 * Defaults to the authenticated user. check_account_permission() has already
+	 * limited a different customer_id to shop managers.
+	 *
+	 * @param \WP_REST_Request $request The request.
+	 * @return int
+	 */
+	private function get_customer_id( $request ) {
+		$customer_id = (int) $request->get_param( 'customer_id' );
+		return $customer_id ? $customer_id : get_current_user_id();
 	}
 }

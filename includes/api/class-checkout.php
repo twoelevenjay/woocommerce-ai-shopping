@@ -28,7 +28,7 @@ class Checkout extends REST_Controller {
 			array(
 				'methods'             => 'POST',
 				'callback'            => array( $this, 'calculate' ),
-				'permission_callback' => array( $this, 'check_read_permission' ),
+				'permission_callback' => array( $this, 'check_session_permission' ),
 			)
 		);
 
@@ -38,7 +38,7 @@ class Checkout extends REST_Controller {
 			array(
 				'methods'             => 'POST',
 				'callback'            => array( $this, 'validate' ),
-				'permission_callback' => array( $this, 'check_read_permission' ),
+				'permission_callback' => array( $this, 'check_session_permission' ),
 			)
 		);
 
@@ -48,7 +48,7 @@ class Checkout extends REST_Controller {
 			array(
 				'methods'             => 'PUT',
 				'callback'            => array( $this, 'set_shipping_address' ),
-				'permission_callback' => array( $this, 'check_write_permission' ),
+				'permission_callback' => array( $this, 'check_session_permission' ),
 			)
 		);
 
@@ -58,7 +58,7 @@ class Checkout extends REST_Controller {
 			array(
 				'methods'             => 'PUT',
 				'callback'            => array( $this, 'set_billing_address' ),
-				'permission_callback' => array( $this, 'check_write_permission' ),
+				'permission_callback' => array( $this, 'check_session_permission' ),
 			)
 		);
 
@@ -68,7 +68,7 @@ class Checkout extends REST_Controller {
 			array(
 				'methods'             => 'GET',
 				'callback'            => array( $this, 'get_shipping_methods' ),
-				'permission_callback' => array( $this, 'check_read_permission' ),
+				'permission_callback' => array( $this, 'check_session_permission' ),
 			)
 		);
 
@@ -78,7 +78,7 @@ class Checkout extends REST_Controller {
 			array(
 				'methods'             => 'PUT',
 				'callback'            => array( $this, 'set_shipping_method' ),
-				'permission_callback' => array( $this, 'check_write_permission' ),
+				'permission_callback' => array( $this, 'check_session_permission' ),
 			)
 		);
 
@@ -98,7 +98,7 @@ class Checkout extends REST_Controller {
 			array(
 				'methods'             => 'POST',
 				'callback'            => array( $this, 'place_order' ),
-				'permission_callback' => array( $this, 'check_write_permission' ),
+				'permission_callback' => array( $this, 'check_session_permission' ),
 			)
 		);
 	}
@@ -408,6 +408,7 @@ class Checkout extends REST_Controller {
 
 		// Add order note.
 		$order->add_order_note( __( 'Order placed via AI Shopping API.', '211j-ai-shopping-for-woocommerce' ) );
+		Orders::record_creator( $order );
 		$order->save();
 
 		// Clean up the cart session.
@@ -443,7 +444,7 @@ class Checkout extends REST_Controller {
 			);
 		}
 
-		$session = Cart_Session::load( $token );
+		$session = Cart_Session::load_for_current_user( $token );
 		if ( ! $session ) {
 			return new \WP_Error(
 				'cart_not_found',

@@ -18,6 +18,7 @@ namespace TwoElevenJay\AIShopping\Protocols;
 
 defined( 'ABSPATH' ) || exit;
 
+use TwoElevenJay\AIShopping\Api\Orders;
 use TwoElevenJay\AIShopping\Api\REST_Controller;
 use TwoElevenJay\AIShopping\Cart\Cart_Session;
 
@@ -83,12 +84,12 @@ class ACP_Adapter extends REST_Controller {
 				array(
 					'methods'             => 'POST',
 					'callback'            => array( $this, 'update_checkout' ),
-					'permission_callback' => array( $this, 'check_write_permission' ),
+					'permission_callback' => array( $this, 'check_session_permission' ),
 				),
 				array(
 					'methods'             => 'GET',
 					'callback'            => array( $this, 'get_checkout' ),
-					'permission_callback' => array( $this, 'check_read_permission' ),
+					'permission_callback' => array( $this, 'check_session_permission' ),
 				),
 			)
 		);
@@ -99,7 +100,7 @@ class ACP_Adapter extends REST_Controller {
 			array(
 				'methods'             => 'POST',
 				'callback'            => array( $this, 'complete_checkout' ),
-				'permission_callback' => array( $this, 'check_write_permission' ),
+				'permission_callback' => array( $this, 'check_session_permission' ),
 			)
 		);
 
@@ -109,7 +110,7 @@ class ACP_Adapter extends REST_Controller {
 			array(
 				'methods'             => 'POST',
 				'callback'            => array( $this, 'cancel_checkout' ),
-				'permission_callback' => array( $this, 'check_write_permission' ),
+				'permission_callback' => array( $this, 'check_session_permission' ),
 			)
 		);
 
@@ -132,17 +133,17 @@ class ACP_Adapter extends REST_Controller {
 				array(
 					'methods'             => 'POST',
 					'callback'            => array( $this, 'update_checkout' ),
-					'permission_callback' => array( $this, 'check_write_permission' ),
+					'permission_callback' => array( $this, 'check_session_permission' ),
 				),
 				array(
 					'methods'             => 'GET',
 					'callback'            => array( $this, 'get_checkout' ),
-					'permission_callback' => array( $this, 'check_read_permission' ),
+					'permission_callback' => array( $this, 'check_session_permission' ),
 				),
 				array(
 					'methods'             => 'DELETE',
 					'callback'            => array( $this, 'cancel_checkout' ),
-					'permission_callback' => array( $this, 'check_write_permission' ),
+					'permission_callback' => array( $this, 'check_session_permission' ),
 				),
 			)
 		);
@@ -153,7 +154,7 @@ class ACP_Adapter extends REST_Controller {
 			array(
 				'methods'             => 'POST',
 				'callback'            => array( $this, 'complete_checkout' ),
-				'permission_callback' => array( $this, 'check_write_permission' ),
+				'permission_callback' => array( $this, 'check_session_permission' ),
 			)
 		);
 	}
@@ -179,7 +180,6 @@ class ACP_Adapter extends REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function create_checkout( $request ) {
-		$key_row = $request->get_param( '_twoelevenjay_ais_key' );
 		$items   = $request->get_param( 'items' );
 
 		if ( empty( $items ) || ! is_array( $items ) ) {
@@ -192,7 +192,7 @@ class ACP_Adapter extends REST_Controller {
 		}
 
 		// Create cart session.
-		$token     = Cart_Session::create( $key_row ? $key_row['id'] : 0 );
+		$token     = Cart_Session::create();
 		$cart_data = array( 'items' => array(), 'coupons' => array() );
 
 		foreach ( $items as $item ) {
@@ -338,7 +338,7 @@ class ACP_Adapter extends REST_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function get_checkout( $request ) {
-		$session = Cart_Session::load( sanitize_text_field( $request['id'] ) );
+		$session = Cart_Session::load_for_current_user( sanitize_text_field( $request['id'] ) );
 		if ( ! $session ) {
 			return $this->error_response( 'checkout_not_found', __( 'Checkout session not found or expired.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
 		}
@@ -377,7 +377,7 @@ class ACP_Adapter extends REST_Controller {
 	 */
 	public function update_checkout( $request ) {
 		$token   = sanitize_text_field( $request['id'] );
-		$session = Cart_Session::load( $token );
+		$session = Cart_Session::load_for_current_user( $token );
 
 		if ( ! $session ) {
 			return $this->error_response( 'checkout_not_found', __( 'Checkout session not found or expired.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
@@ -536,7 +536,7 @@ class ACP_Adapter extends REST_Controller {
 	 */
 	public function complete_checkout( $request ) {
 		$token   = sanitize_text_field( $request['id'] );
-		$session = Cart_Session::load( $token );
+		$session = Cart_Session::load_for_current_user( $token );
 
 		if ( ! $session ) {
 			return $this->error_response( 'checkout_not_found', __( 'Checkout session not found or expired.', '211j-ai-shopping-for-woocommerce' ), 404, $request );
@@ -604,6 +604,7 @@ class ACP_Adapter extends REST_Controller {
 		$order->calculate_totals();
 		$order->set_status( 'processing' );
 		$order->add_order_note( __( 'Order placed via ACP (Agentic Commerce Protocol).', '211j-ai-shopping-for-woocommerce' ) );
+		Orders::record_creator( $order );
 		$order->save();
 
 		// Clean up checkout session.
@@ -641,7 +642,7 @@ class ACP_Adapter extends REST_Controller {
 	 */
 	public function cancel_checkout( $request ) {
 		$token   = sanitize_text_field( $request['id'] );
-		$session = Cart_Session::load( $token );
+		$session = Cart_Session::load_for_current_user( $token );
 
 		if ( ! $session ) {
 			return $this->error_response( 'checkout_not_found', __( 'Checkout session not found or expired.', '211j-ai-shopping-for-woocommerce' ), 404, $request );

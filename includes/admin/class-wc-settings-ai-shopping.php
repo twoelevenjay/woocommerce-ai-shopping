@@ -150,8 +150,8 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 				'title'   => __( 'Allow HTTP', '211j-ai-shopping-for-woocommerce' ),
 				'id'      => 'twoelevenjay_ais_allow_http',
 				'type'    => 'checkbox',
-				'default' => 'yes',
-				'desc'    => __( 'Allow API access over HTTP (for local development).', '211j-ai-shopping-for-woocommerce' ),
+				'default' => 'no',
+				'desc'    => __( 'Allow API access over plain HTTP. Only for local development. Leave this off on a live store.', '211j-ai-shopping-for-woocommerce' ),
 			),
 			array(
 				'title'   => __( 'Debug Logging', '211j-ai-shopping-for-woocommerce' ),

@@ -276,7 +276,8 @@ class MCP_Adapter extends REST_Controller {
 				'outputSchema' => array(
 					'type'       => 'object',
 					'properties' => array(
-						'order_id' => array( 'type' => 'integer', 'description' => 'WooCommerce order ID' ),
+						'order_id'  => array( 'type' => 'integer', 'description' => 'WooCommerce order ID' ),
+						'order_key' => array( 'type' => 'string', 'description' => 'Order key for later lookups' ),
 						'status'   => array( 'type' => 'string', 'description' => 'Order status' ),
 						'total'    => array( 'type' => 'number', 'description' => 'Order total' ),
 					),
@@ -290,7 +291,8 @@ class MCP_Adapter extends REST_Controller {
 				'inputSchema' => array(
 					'type'       => 'object',
 					'properties' => array(
-						'order_id' => array( 'type' => 'integer', 'description' => 'Order ID' ),
+						'order_id'  => array( 'type' => 'integer', 'description' => 'Order ID' ),
+						'order_key' => array( 'type' => 'string', 'description' => 'Order key returned by place_order (not needed for the user who placed the order)' ),
 					),
 					'required'   => array( 'order_id' ),
 				),
@@ -388,8 +390,7 @@ class MCP_Adapter extends REST_Controller {
 	 * @return array
 	 */
 	public function tool_create_cart( $params, $request = null ) {
-		$key_row = $request ? $request->get_param( '_twoelevenjay_ais_key' ) : null;
-		$token   = \TwoElevenJay\AIShopping\Cart\Cart_Session::create( $key_row ? $key_row['id'] : 0 );
+		$token = \TwoElevenJay\AIShopping\Cart\Cart_Session::create();
 		return array( 'cart_token' => $token );
 	}
 
@@ -401,7 +402,7 @@ class MCP_Adapter extends REST_Controller {
 	 */
 	public function tool_add_to_cart( $params ) {
 		$token   = $params['cart_token'] ?? '';
-		$session = \TwoElevenJay\AIShopping\Cart\Cart_Session::load( $token );
+		$session = \TwoElevenJay\AIShopping\Cart\Cart_Session::load_for_current_user( $token );
 		if ( ! $session ) {
 			return array( 'error' => 'Cart not found' );
 		}
@@ -431,7 +432,7 @@ class MCP_Adapter extends REST_Controller {
 	 * @return array
 	 */
 	public function tool_get_cart( $params ) {
-		$session = \TwoElevenJay\AIShopping\Cart\Cart_Session::load( $params['cart_token'] ?? '' );
+		$session = \TwoElevenJay\AIShopping\Cart\Cart_Session::load_for_current_user( $params['cart_token'] ?? '' );
 		if ( ! $session ) {
 			return array( 'error' => 'Cart not found' );
 		}
@@ -486,7 +487,7 @@ class MCP_Adapter extends REST_Controller {
 	 */
 	public function tool_place_order( $params ) {
 		$token   = $params['cart_token'] ?? '';
-		$session = \TwoElevenJay\AIShopping\Cart\Cart_Session::load( $token );
+		$session = \TwoElevenJay\AIShopping\Cart\Cart_Session::load_for_current_user( $token );
 		if ( ! $session ) {
 			return array( 'error' => 'Cart not found' );
 		}
@@ -529,14 +530,16 @@ class MCP_Adapter extends REST_Controller {
 		$order->calculate_totals();
 		$order->set_status( 'processing' );
 		$order->add_order_note( __( 'Order placed via MCP (Model Context Protocol).', '211j-ai-shopping-for-woocommerce' ) );
+		\TwoElevenJay\AIShopping\Api\Orders::record_creator( $order );
 		$order->save();
 
 		\TwoElevenJay\AIShopping\Cart\Cart_Session::delete( $token );
 
 		return array(
-			'order_id' => $order->get_id(),
-			'status'   => $order->get_status(),
-			'total'    => (float) $order->get_total(),
+			'order_id'  => $order->get_id(),
+			'order_key' => $order->get_order_key(),
+			'status'    => $order->get_status(),
+			'total'     => (float) $order->get_total(),
 		);
 	}
 
@@ -547,8 +550,13 @@ class MCP_Adapter extends REST_Controller {
 	 * @return array
 	 */
 	public function tool_get_order( $params ) {
+		$order = wc_get_order( (int) ( $params['order_id'] ?? 0 ) );
+		if ( ! $order || ! \TwoElevenJay\AIShopping\Api\Orders::current_user_can_view( $order, (string) ( $params['order_key'] ?? '' ) ) ) {
+			return array( 'error' => 'Order not found' );
+		}
+
 		$request = new \WP_REST_Request( 'GET' );
-		$request['id'] = (int) ( $params['order_id'] ?? 0 );
+		$request['id'] = $order->get_id();
 		$api      = new \TwoElevenJay\AIShopping\Api\Orders();
 		$response = $api->get_order( $request );
 		return $response->get_data()['data'] ?? $response->get_data();

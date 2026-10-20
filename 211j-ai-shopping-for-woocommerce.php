@@ -118,7 +118,7 @@ function twoelevenjay_ais_install() {
 		'twoelevenjay_ais_rate_limit_read'             => 60,
 		'twoelevenjay_ais_rate_limit_write'            => 30,
 		'twoelevenjay_ais_enable_logging'              => 'no',
-		'twoelevenjay_ais_allow_http'                  => 'yes',
+		'twoelevenjay_ais_allow_http'                  => 'no',
 		// Discovery layer defaults.
 		'twoelevenjay_ais_enable_discovery'            => 'yes',
 		'twoelevenjay_ais_enable_schema_enhancement'   => 'yes',
