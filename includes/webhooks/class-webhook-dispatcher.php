@@ -1,6 +1,6 @@
 <?php
 /**
- * Webhook dispatcher — fires on WooCommerce order status transitions.
+ * Webhook dispatcher: fires on WooCommerce order status transitions.
  *
  * @package TwoElevenJay\AIShopping\Webhooks
  */
@@ -17,7 +17,7 @@ use TwoElevenJay\AIShopping\Security\HMAC;
 class Webhook_Dispatcher {
 
 	/**
-	 * Constructor — hook into WooCommerce order status transitions.
+	 * Constructor: hook into WooCommerce order status transitions.
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_order_status_changed', array( $this, 'on_order_status_change' ), 10, 4 );

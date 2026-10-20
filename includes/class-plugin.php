@@ -34,7 +34,7 @@ class Plugin {
 	}
 
 	/**
-	 * Constructor — wire everything up.
+	 * Constructor: wire everything up.
 	 */
 	private function __construct() {
 		$this->init_hooks();

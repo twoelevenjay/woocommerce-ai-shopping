@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
 class Schema_Enhancer {
 
 	/**
-	 * Constructor — register hooks.
+	 * Constructor: register hooks.
 	 */
 	public function __construct() {
 		add_filter( 'woocommerce_structured_data_product', array( $this, 'enhance_product_schema' ), 20, 2 );
@@ -33,7 +33,7 @@ class Schema_Enhancer {
 	 * @return array
 	 */
 	public function enhance_product_schema( $markup, $product ) {
-		// Brand — from pa_brand attribute, _brand meta, or fall back to store name.
+		// Brand: from pa_brand attribute, _brand meta, or fall back to store name.
 		$brand = $this->get_product_brand( $product );
 		if ( $brand ) {
 			$markup['brand'] = array(
@@ -118,7 +118,7 @@ class Schema_Enhancer {
 			if ( ! is_a( $attr, 'WC_Product_Attribute' ) ) {
 				continue;
 			}
-			// Skip brand — already handled above.
+			// Skip brand: already handled above.
 			if ( 'pa_brand' === $attr->get_name() ) {
 				continue;
 			}

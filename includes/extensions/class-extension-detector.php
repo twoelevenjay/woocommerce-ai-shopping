@@ -1,6 +1,6 @@
 <?php
 /**
- * Extension detector — scans for supported WooCommerce extensions.
+ * Extension detector: scans for supported WooCommerce extensions.
  *
  * @package TwoElevenJay\AIShopping\Extensions
  */

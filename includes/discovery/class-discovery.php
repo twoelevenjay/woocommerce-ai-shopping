@@ -1,6 +1,6 @@
 <?php
 /**
- * AI Discovery Layer — central orchestrator.
+ * AI Discovery Layer: central orchestrator.
  *
  * Registers all hooks that make the store discoverable by AI agents:
  * rewrite rules, content negotiation, head tags, HTTP headers, robots.txt,
@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
 class Discovery {
 
 	/**
-	 * Constructor — wire up all discovery hooks.
+	 * Constructor: wire up all discovery hooks.
 	 */
 	public function __construct() {
 		if ( 'yes' !== get_option( 'twoelevenjay_ais_enable_discovery', 'yes' ) ) {
@@ -34,7 +34,7 @@ class Discovery {
 		// Rewrite rules for discovery endpoints.
 		add_action( 'init', array( $this, 'register_rewrite_rules' ) );
 
-		// Content negotiation (priority 1 — before other template_redirect handlers).
+		// Content negotiation (priority 1: before other template_redirect handlers).
 		add_action( 'template_redirect', array( $this, 'handle_content_negotiation' ), 1 );
 
 		// Discovery endpoints (priority 10).
@@ -363,7 +363,7 @@ class Discovery {
 	}
 
 	/**
-	 * Serve /llms.txt — plain text store overview for LLMs.
+	 * Serve /llms.txt: plain text store overview for LLMs.
 	 */
 	private function serve_llms_txt() {
 		if ( 'yes' !== get_option( 'twoelevenjay_ais_enable_llms_txt', 'yes' ) ) {
@@ -448,7 +448,7 @@ class Discovery {
 	}
 
 	/**
-	 * Serve /ai-shopping-feed.json — full product catalog.
+	 * Serve /ai-shopping-feed.json: full product catalog.
 	 */
 	private function serve_product_feed() {
 		if ( 'yes' !== get_option( 'twoelevenjay_ais_enable_product_feed', 'yes' ) ) {
@@ -544,7 +544,7 @@ class Discovery {
 				foreach ( $var_attrs as $key => $val ) {
 					$parts[] = wc_attribute_label( $key ) . ': ' . $val;
 				}
-				$md .= '- ' . implode( ', ', $parts ) . " — {$var->get_price()} {$currency} ({$var->get_stock_status()})\n";
+				$md .= '- ' . implode( ', ', $parts ) . ", {$var->get_price()} {$currency} ({$var->get_stock_status()})\n";
 			}
 		}
 
@@ -563,13 +563,13 @@ class Discovery {
 		$name     = get_bloginfo( 'name' );
 		$currency = get_woocommerce_currency();
 
-		$md = "# {$name} — Product Catalog\n\n";
+		$md = "# {$name}: Product Catalog\n\n";
 
 		// If on a taxonomy page, show category info.
 		if ( is_product_taxonomy() ) {
 			$term = get_queried_object();
 			if ( $term ) {
-				$md  = "# {$name} — {$term->name}\n\n";
+				$md  = "# {$name}: {$term->name}\n\n";
 				if ( $term->description ) {
 					$md .= "{$term->description}\n\n";
 				}

@@ -259,7 +259,7 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 	}
 
 	/**
-	 * Save settings — skip for custom sections.
+	 * Save settings: skip for custom sections.
 	 */
 	public function save() {
 		global $current_section;
@@ -292,9 +292,9 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 						<td><?php echo esc_html( $data['name'] ); ?></td>
 						<td>
 							<?php if ( $data['active'] ) : ?>
-								<span style="color: #00a32a; font-weight: bold;">&#10003; <?php esc_html_e( 'Active — Integrated', '211j-ai-shopping-for-woocommerce' ); ?></span>
+								<span style="color: #00a32a; font-weight: bold;"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php esc_html_e( 'Active and integrated', '211j-ai-shopping-for-woocommerce' ); ?></span>
 							<?php else : ?>
-								<span style="color: #888;">&#8212; <?php esc_html_e( 'Not installed', '211j-ai-shopping-for-woocommerce' ); ?></span>
+								<span style="color: #888;"><span class="dashicons dashicons-minus" aria-hidden="true"></span> <?php esc_html_e( 'Not installed', '211j-ai-shopping-for-woocommerce' ); ?></span>
 							<?php endif; ?>
 						</td>
 					</tr>
@@ -320,6 +320,7 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 			);
 			?>
 		</p>
+		<p><?php esc_html_e( 'Catalog and store endpoints are public. Cart, checkout, order and account endpoints require a WordPress user signed in with an Application Password, and each user can only reach their own carts, sessions, orders and account.', '211j-ai-shopping-for-woocommerce' ); ?></p>
 
 		<h3><?php esc_html_e( 'Core Storefront API', '211j-ai-shopping-for-woocommerce' ); ?></h3>
 		<table class="widefat striped">
@@ -465,9 +466,9 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 						<td><strong><?php echo esc_html( $mech['name'] ); ?></strong></td>
 						<td>
 							<?php if ( $status ) : ?>
-								<span style="color: #00a32a; font-weight: bold;">&#10003; <?php echo esc_html( $status_text ); ?></span>
+								<span style="color: #00a32a; font-weight: bold;"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php echo esc_html( $status_text ); ?></span>
 							<?php else : ?>
-								<span style="color: #888;">&#8212; <?php echo esc_html( $status_text ); ?></span>
+								<span style="color: #888;"><span class="dashicons dashicons-minus" aria-hidden="true"></span> <?php echo esc_html( $status_text ); ?></span>
 							<?php endif; ?>
 						</td>
 						<td><?php echo esc_html( $mech['desc'] ); ?></td>
@@ -476,8 +477,6 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 								<a href="<?php echo esc_url( $mech['test'] ); ?>" target="_blank" class="button button-small">
 									<?php esc_html_e( 'Test', '211j-ai-shopping-for-woocommerce' ); ?>
 								</a>
-							<?php else : ?>
-								&mdash;
 							<?php endif; ?>
 						</td>
 					</tr>
@@ -503,18 +502,18 @@ class WC_Settings_AI_Shopping extends \WC_Settings_Page {
 		?>
 		<div style="margin-top: 40px; padding: 20px 24px; background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 4px; display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap;">
 			<div style="flex: 1; min-width: 200px;">
-				<p style="margin: 0 0 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #999;">Built by</p>
+				<p style="margin: 0 0 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #999;"><?php esc_html_e( 'Built by', '211j-ai-shopping-for-woocommerce' ); ?></p>
 				<p style="margin: 0 0 6px;">
-					<a href="https://211j.com" target="_blank" rel="noopener" style="font-weight: 600; color: #1d2327; text-decoration: none; font-size: 14px;">211j</a>
+					<a href="https://211j.com" target="_blank" rel="noopener" style="font-weight: 600; color: #1d2327; text-decoration: none; font-size: 14px;">Two Eleven Jay</a>
 				</p>
-				<p style="margin: 0; color: #646970; font-size: 13px;">WordPress &amp; WooCommerce development. We build tools that make stores smarter.</p>
+				<p style="margin: 0; color: #646970; font-size: 13px;"><?php esc_html_e( 'WordPress and WooCommerce development. We build tools that make stores smarter.', '211j-ai-shopping-for-woocommerce' ); ?></p>
 			</div>
 			<div style="flex: 1; min-width: 200px;">
-				<p style="margin: 0 0 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #999;">Also from us</p>
+				<p style="margin: 0 0 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #999;"><?php esc_html_e( 'Also from us', '211j-ai-shopping-for-woocommerce' ); ?></p>
 				<p style="margin: 0 0 6px;">
-					<a href="https://uphost.ly" target="_blank" rel="noopener" style="font-weight: 600; color: #1d2327; text-decoration: none; font-size: 14px;">Uphost</a>
+					<a href="https://uphost.ly" target="_blank" rel="noopener" style="font-weight: 600; color: #1d2327; text-decoration: none; font-size: 14px;">Uphostly</a>
 				</p>
-				<p style="margin: 0; color: #646970; font-size: 13px;">Managed WordPress hosting with built-in support. Fast, reliable, human.</p>
+				<p style="margin: 0; color: #646970; font-size: 13px;"><?php esc_html_e( 'Managed WordPress hosting with built-in support. Fast, reliable, human.', '211j-ai-shopping-for-woocommerce' ); ?></p>
 			</div>
 		</div>
 		<?php

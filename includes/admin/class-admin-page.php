@@ -36,7 +36,7 @@ class Admin_Page {
 
 		delete_transient( 'twoelevenjay_ais_product_feed' );
 
-		wp_safe_redirect( admin_url( 'admin.php?page=wc-settings&tab=ai-shopping&section=discovery&cache_cleared=1' ) );
+		wp_safe_redirect( admin_url( 'admin.php?page=wc-settings&tab=211j-ai-shopping-for-woocommerce&section=discovery&cache_cleared=1' ) );
 		exit;
 	}
 }

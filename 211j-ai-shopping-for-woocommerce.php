@@ -1,21 +1,21 @@
 <?php
 /**
  * Plugin Name: 211j AI Shopping for WooCommerce
- * Plugin URI:  https://github.com/twoelevenjay/ai-shopping
+ * Plugin URI:  https://github.com/twoelevenjay/woocommerce-ai-shopping
  * Description: Expose your WooCommerce storefront to AI agents via ACP (2026-01-30), UCP (2026-01-11), and MCP (2025-11-25) protocols. Zero-config product discovery, cart management, checkout, and order tracking for any AI agent.
- * Version:     1.1.1
- * Author:      flavflavor
- * Author URI:  https://flavflavor.com
+ * Version:     1.2.0
+ * Author:      Two Eleven Jay LLC
+ * Author URI:  https://211j.com
  * License:     GPL-2.0-or-later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: 211j-ai-shopping-for-woocommerce
  * Domain Path: /languages
  * Requires at least: 6.4
- * Tested up to: 6.9
+ * Tested up to: 7.1
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
  * WC requires at least: 8.0
- * WC tested up to: 10.6.1
+ * WC tested up to: 11.2.1
  *
  * @package TwoElevenJay\AIShopping
  */
@@ -23,7 +23,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Plugin constants.
-define( 'TWOELEVENJAY_AIS_VERSION', '1.1.1' );
+define( 'TWOELEVENJAY_AIS_VERSION', '1.2.0' );
 define( 'TWOELEVENJAY_AIS_PLUGIN_FILE', __FILE__ );
 define( 'TWOELEVENJAY_AIS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TWOELEVENJAY_AIS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

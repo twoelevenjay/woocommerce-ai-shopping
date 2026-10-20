@@ -26,18 +26,18 @@ use TwoElevenJay\AIShopping\Cart\Cart_Session;
  * Maps ACP's checkout model to the internal API.
  *
  * ACP endpoints (spec 2026-01-30):
- * - POST   /acp/checkout_sessions                       — Create checkout session
- * - POST   /acp/checkout_sessions/{id}                  — Update checkout session
- * - GET    /acp/checkout_sessions/{id}                  — Get checkout session
- * - POST   /acp/checkout_sessions/{id}/complete         — Complete checkout
- * - POST   /acp/checkout_sessions/{id}/cancel           — Cancel checkout
+ * - POST   /acp/checkout_sessions                      : Create checkout session
+ * - POST   /acp/checkout_sessions/{id}                 : Update checkout session
+ * - GET    /acp/checkout_sessions/{id}                 : Get checkout session
+ * - POST   /acp/checkout_sessions/{id}/complete        : Complete checkout
+ * - POST   /acp/checkout_sessions/{id}/cancel          : Cancel checkout
  *
  * Legacy endpoints (1.0.0) are preserved for backwards compatibility:
- * - POST   /acp/checkout                                — Create (legacy)
- * - POST   /acp/checkout/{id}                           — Update (legacy)
- * - GET    /acp/checkout/{id}                            — Get (legacy)
- * - POST   /acp/checkout/{id}/complete                  — Complete (legacy)
- * - DELETE /acp/checkout/{id}                            — Cancel (legacy)
+ * - POST   /acp/checkout                               : Create (legacy)
+ * - POST   /acp/checkout/{id}                          : Update (legacy)
+ * - GET    /acp/checkout/{id}                           : Get (legacy)
+ * - POST   /acp/checkout/{id}/complete                 : Complete (legacy)
+ * - DELETE /acp/checkout/{id}                           : Cancel (legacy)
  */
 class ACP_Adapter extends REST_Controller {
 

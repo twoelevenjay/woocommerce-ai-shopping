@@ -159,7 +159,7 @@ class Rate_Limiter {
 
 		foreach ( $headers as $header ) {
 			if ( ! empty( $_SERVER[ $header ] ) ) {
-				// X-Forwarded-For may contain multiple IPs — take the first.
+				// X-Forwarded-For may contain multiple IPs: take the first.
 				$ip = strtok( sanitize_text_field( wp_unslash( $_SERVER[ $header ] ) ), ',' );
 				$ip = trim( $ip );
 				if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
